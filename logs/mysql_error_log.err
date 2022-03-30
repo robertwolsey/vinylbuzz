@@ -1,0 +1,4 @@
+2022-03-30T15:05:30.833930Z 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+2022-03-30T15:05:30.835277Z 0 [Note] --secure-file-priv is set to NULL. Operations related to importing and exporting data are disabled
+2022-03-30T15:05:30.836339Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2022-03-30T15:05:30.836378Z 0 [Note] C:\MAMP\\bin\mysql\bin\mysqld.exe (mysqld 5.7.24) starting as process 22668 ...

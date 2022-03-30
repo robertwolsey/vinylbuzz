@@ -1,0 +1,1 @@
+1|||You have selected a version of PHP 8|||PHP 8 is a major update of PHP. It cuts off old pigtails and throws away lots of obsolete code. Therefore, your site may not behave as expected. If this is the case just switch back to older version of PHP.|||url:https://documentation.mamp.info/en/MAMP-PRO-Windows/FAQ/PHP/PHP-8-compatibility/|||

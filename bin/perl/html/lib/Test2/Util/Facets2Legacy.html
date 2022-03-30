@@ -1,0 +1,234 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Test2::Util::Facets2Legacy - Convert facet data to the legacy event API.</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;Test2::Util::Facets2Legacy - Convert facet data to the legacy event API.</span></strong></big>
+</td></tr>
+</table>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a>
+    <ul>
+      <li><a href="#AS-METHODS">AS METHODS</a></li>
+      <li><a href="#AS-FUNCTIONS">AS FUNCTIONS</a></li>
+    </ul>
+  </li>
+  <li><a href="#NOTE-ON-CYCLES">NOTE ON CYCLES</a></li>
+  <li><a href="#EXPORTS">EXPORTS</a></li>
+  <li><a href="#SOURCE">SOURCE</a></li>
+  <li><a href="#MAINTAINERS">MAINTAINERS</a></li>
+  <li><a href="#AUTHORS">AUTHORS</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Test2::Util::Facets2Legacy - Convert facet data to the legacy event API.</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This module exports several subroutines from the older event API (see <a href="file:/c|/perl/html/lib/Test2/Event.html">Test2::Event</a>). These subroutines can be used as methods on any object that provides a custom <code>facet_data()</code> method. These subroutines can also be used as functions that take a facet data hashref as arguments.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<h2 id="AS-METHODS">AS METHODS</h2>
+
+<pre><code>    package My::Event;
+
+    use Test2::Util::Facets2Legacy &#39;:ALL&#39;;
+
+    sub facet_data { return { ... } }</code></pre>
+
+<p>Then to use it:</p>
+
+<pre><code>    my $e = My::Event-&gt;new(...);
+
+    my $causes_fail = $e-&gt;causes_fail;
+    my $summary     = $e-&gt;summary;
+    ....</code></pre>
+
+<h2 id="AS-FUNCTIONS">AS FUNCTIONS</h2>
+
+<pre><code>    use Test2::Util::Facets2Legacy &#39;:ALL&#39;;
+
+    my $f = {
+        assert =&gt; { ... },
+        info =&gt; [{...}, ...],
+        control =&gt; {...},
+        ...
+    };
+
+    my $causes_fail = causes_fail($f);
+    my $summary     = summary($f);</code></pre>
+
+<h1 id="NOTE-ON-CYCLES">NOTE ON CYCLES</h1>
+
+<p>When used as methods, all these subroutines call <code>$e-&gt;facet_data()</code>. The default <code>facet_data()</code> method in <a href="file:/c|/perl/html/lib/Test2/Event.html">Test2::Event</a> relies on the legacy methods this module emulates in order to work. As a result of this it is very easy to create infinite recursion bugs.</p>
+
+<p>These methods have cycle detection and will throw an exception early if a cycle is detected. <code>uuid()</code> is currently the only subroutine in this library that has a fallback behavior when cycles are detected.</p>
+
+<h1 id="EXPORTS">EXPORTS</h1>
+
+<p>Nothing is exported by default. You must specify which methods to import, or use the &#39;:ALL&#39; tag.</p>
+
+<dl>
+
+<dt id="bool-e-causes_fail">$bool = $e-&gt;causes_fail()</dt>
+<dd>
+
+</dd>
+<dt id="bool-causes_fail-f">$bool = causes_fail($f)</dt>
+<dd>
+
+<p>Check if the event or facets result in a failing state.</p>
+
+</dd>
+<dt id="bool-e-diagnostics">$bool = $e-&gt;diagnostics()</dt>
+<dd>
+
+</dd>
+<dt id="bool-diagnostics-f">$bool = diagnostics($f)</dt>
+<dd>
+
+<p>Check if the event or facets contain any diagnostics information.</p>
+
+</dd>
+<dt id="bool-e-global">$bool = $e-&gt;global()</dt>
+<dd>
+
+</dd>
+<dt id="bool-global-f">$bool = global($f)</dt>
+<dd>
+
+<p>Check if the event or facets need to be globally processed.</p>
+
+</dd>
+<dt id="bool-e-increments_count">$bool = $e-&gt;increments_count()</dt>
+<dd>
+
+</dd>
+<dt id="bool-increments_count-f">$bool = increments_count($f)</dt>
+<dd>
+
+<p>Check if the event or facets make an assertion.</p>
+
+</dd>
+<dt id="bool-e-no_display">$bool = $e-&gt;no_display()</dt>
+<dd>
+
+</dd>
+<dt id="bool-no_display-f">$bool = no_display($f)</dt>
+<dd>
+
+<p>Check if the event or facets should be rendered or hidden.</p>
+
+</dd>
+<dt id="max-directive-reason-e-sets_plan">($max, $directive, $reason) = $e-&gt;sets_plan()</dt>
+<dd>
+
+</dd>
+<dt id="max-directive-reason-sets_plan-f">($max, $directive, $reason) = sets_plan($f)</dt>
+<dd>
+
+<p>Check if the event or facets set a plan, and return the plan details.</p>
+
+</dd>
+<dt id="id-e-subtest_id">$id = $e-&gt;subtest_id()</dt>
+<dd>
+
+</dd>
+<dt id="id-subtest_id-f">$id = subtest_id($f)</dt>
+<dd>
+
+<p>Get the subtest id, if any.</p>
+
+</dd>
+<dt id="string-e-summary">$string = $e-&gt;summary()</dt>
+<dd>
+
+</dd>
+<dt id="string-summary-f">$string = summary($f)</dt>
+<dd>
+
+<p>Get the summary of the event or facets hash, if any.</p>
+
+</dd>
+<dt id="undef_or_int-e-terminate">$undef_or_int = $e-&gt;terminate()</dt>
+<dd>
+
+</dd>
+<dt id="undef_or_int-terminate-f">$undef_or_int = terminate($f)</dt>
+<dd>
+
+<p>Check if the event or facets should result in process termination, if so the exit code is returned (which could be 0). undef is returned if no termination is requested.</p>
+
+</dd>
+<dt id="uuid-e-uuid">$uuid = $e-&gt;uuid()</dt>
+<dd>
+
+</dd>
+<dt id="uuid-uuid-f">$uuid = uuid($f)</dt>
+<dd>
+
+<p>Get the UUID of the facets or event.</p>
+
+<p><b>Note:</b> This will fall back to <code>$e-&gt;SUPER::uuid()</code> if a cycle is detected and an event is used as the argument.</p>
+
+</dd>
+</dl>
+
+<h1 id="SOURCE">SOURCE</h1>
+
+<p>The source code repository for Test2 can be found at <i>http://github.com/Test-More/test-more/</i>.</p>
+
+<h1 id="MAINTAINERS">MAINTAINERS</h1>
+
+<dl>
+
+<dt id="Chad-Granum-exodist-cpan.org">Chad Granum &lt;exodist@cpan.org&gt;</dt>
+<dd>
+
+</dd>
+</dl>
+
+<h1 id="AUTHORS">AUTHORS</h1>
+
+<dl>
+
+<dt id="Chad-Granum-exodist-cpan.org1">Chad Granum &lt;exodist@cpan.org&gt;</dt>
+<dd>
+
+</dd>
+</dl>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright 2019 Chad Granum &lt;exodist@cpan.org&gt;.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+
+<p>See <i>http://dev.perl.org/licenses/</i></p>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;Test2::Util::Facets2Legacy - Convert facet data to the legacy event API.</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
+
+

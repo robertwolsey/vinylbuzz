@@ -1,0 +1,2 @@
+
+Warning: file_get_contents(http://www.mamp.info/feed/win/MAMP/English/feed/home.json): Failed to open stream: Unable to find the socket transport "ssl" - did you forget to enable it when you configured PHP? in C:\MAMP\bin\mamp\feed\fetchFeed.php on line 19

@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DirHandle - (obsolete) supply object methods for directory handles</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;DirHandle - (obsolete) supply object methods for directory handles</span></strong></big>
+</td></tr>
+</table>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>DirHandle - (obsolete) supply object methods for directory handles</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    # recommended approach since Perl 5.6: do not use DirHandle
+    if (opendir my $d, &#39;.&#39;) {
+        while (readdir $d) { something($_); }
+        rewind $d;
+        while (readdir $d) { something_else($_); }
+    }
+
+    # how you would use this module if you were going to
+    use DirHandle;
+    if (my $d = DirHandle-&gt;new(&quot;.&quot;)) {
+        while (defined($_ = $d-&gt;read)) { something($_); }
+        $d-&gt;rewind;
+        while (defined($_ = $d-&gt;read)) { something_else($_); }
+    }</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p><b>There is no reason to use this module nowadays.</b></p>
+
+<p>The <code>DirHandle</code> method provide an alternative interface to the opendir(), closedir(), readdir(), and rewinddir() functions.</p>
+
+<p>Up to Perl 5.5, opendir() could not autovivify a directory handle from <code>undef</code>, so using a lexical handle required using a function from <a href="file:/c|/perl/html/lib/Symbol.html">Symbol</a> to create an anonymous glob, which took a separate step. <code>DirHandle</code> encapsulates this, which allowed cleaner code than opendir(). Since Perl 5.6, opendir() alone has been all you need for lexical handles.</p>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;DirHandle - (obsolete) supply object methods for directory handles</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
+
+

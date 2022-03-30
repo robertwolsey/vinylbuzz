@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>sort - perl pragma to control sort() behaviour</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;sort - perl pragma to control sort() behaviour</span></strong></big>
+</td></tr>
+</table>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#CAVEATS">CAVEATS</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>sort - perl pragma to control sort() behaviour</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    use sort &#39;stable&#39;;          # guarantee stability
+    use sort &#39;defaults&#39;;        # revert to default behavior
+    no  sort &#39;stable&#39;;          # stability not important
+
+    my $current;
+    BEGIN {
+        $current = sort::current();     # identify prevailing pragmata
+    }</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>With the <code>sort</code> pragma you can control the behaviour of the builtin <code>sort()</code> function.</p>
+
+<p>A stable sort means that for records that compare equal, the original input ordering is preserved. Stability will matter only if elements that compare equal can be distinguished in some other way. That means that simple numerical and lexical sorts do not profit from stability, since equal elements are indistinguishable. However, with a comparison such as</p>
+
+<pre><code>   { substr($a, 0, 3) cmp substr($b, 0, 3) }</code></pre>
+
+<p>stability might matter because elements that compare equal on the first 3 characters may be distinguished based on subsequent characters.</p>
+
+<p>Whether sorting is stable by default is an accident of implementation that can change (and has changed) between Perl versions. If stability is important, be sure to say so with a</p>
+
+<pre><code>  use sort &#39;stable&#39;;</code></pre>
+
+<p>The <code>no sort</code> pragma doesn&#39;t <i>forbid</i> what follows, it just leaves the choice open. Thus, after</p>
+
+<pre><code>  no sort &#39;stable&#39;;</code></pre>
+
+<p>sorting may happen to be stable anyway.</p>
+
+<h1 id="CAVEATS">CAVEATS</h1>
+
+<p>As of Perl 5.10, this pragma is lexically scoped and takes effect at compile time. In earlier versions its effect was global and took effect at run-time; the documentation suggested using <code>eval()</code> to change the behaviour:</p>
+
+<pre><code>  { eval &#39;no sort &quot;stable&quot;&#39;;      # stability not wanted
+    print sort::current . &quot;\n&quot;;
+    @a = sort @b;
+    eval &#39;use sort &quot;defaults&quot;&#39;;   # clean up, for others
+  }
+  { eval &#39;use sort qw(defaults stable)&#39;;     # force stability
+    print sort::current . &quot;\n&quot;;
+    @c = sort @d;
+    eval &#39;use sort &quot;defaults&quot;&#39;;   # clean up, for others
+  }</code></pre>
+
+<p>Such code no longer has the desired effect, for two reasons. Firstly, the use of <code>eval()</code> means that the sorting algorithm is not changed until runtime, by which time it&#39;s too late to have any effect. Secondly, <code>sort::current</code> is also called at run-time, when in fact the compile-time value of <code>sort::current</code> is the one that matters.</p>
+
+<p>So now this code would be written:</p>
+
+<pre><code>  { no sort &quot;stable&quot;;      # stability not wanted
+    my $current;
+    BEGIN { $current = sort::current; }
+    print &quot;$current\n&quot;;
+    @a = sort @b;
+    # Pragmas go out of scope at the end of the block
+  }
+  { use sort qw(defaults stable);     # force stability
+    my $current;
+    BEGIN { $current = sort::current; }
+    print &quot;$current\n&quot;;
+    @c = sort @d;
+  }</code></pre>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;sort - perl pragma to control sort() behaviour</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
+
+

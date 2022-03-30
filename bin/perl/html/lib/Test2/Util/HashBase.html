@@ -1,0 +1,320 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Test2::Util::HashBase - Build hash based classes.</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;Test2::Util::HashBase - Build hash based classes.</span></strong></big>
+</td></tr>
+</table>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#THIS-IS-A-BUNDLED-COPY-OF-HASHBASE">THIS IS A BUNDLED COPY OF HASHBASE</a></li>
+  <li><a href="#METHODS">METHODS</a>
+    <ul>
+      <li><a href="#PROVIDED-BY-HASH-BASE">PROVIDED BY HASH BASE</a></li>
+      <li><a href="#HOOKS">HOOKS</a></li>
+    </ul>
+  </li>
+  <li><a href="#ACCESSORS">ACCESSORS</a>
+    <ul>
+      <li><a href="#READ-WRITE">READ/WRITE</a></li>
+      <li><a href="#READ-ONLY">READ ONLY</a></li>
+      <li><a href="#DEPRECATED-SETTER">DEPRECATED SETTER</a></li>
+    </ul>
+  </li>
+  <li><a href="#SUBCLASSING">SUBCLASSING</a></li>
+  <li><a href="#GETTING-A-LIST-OF-ATTRIBUTES-FOR-A-CLASS">GETTING A LIST OF ATTRIBUTES FOR A CLASS</a></li>
+  <li><a href="#SOURCE">SOURCE</a></li>
+  <li><a href="#MAINTAINERS">MAINTAINERS</a></li>
+  <li><a href="#AUTHORS">AUTHORS</a></li>
+  <li><a href="#COPYRIGHT">COPYRIGHT</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>Test2::Util::HashBase - Build hash based classes.</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<p>A class:</p>
+
+<pre><code>    package My::Class;
+    use strict;
+    use warnings;
+
+    # Generate 3 accessors
+    use Test2::Util::HashBase qw/foo -bar ^baz/;
+
+    # Chance to initialize defaults
+    sub init {
+        my $self = shift;    # No other args
+        $self-&gt;{+FOO} ||= &quot;foo&quot;;
+        $self-&gt;{+BAR} ||= &quot;bar&quot;;
+        $self-&gt;{+BAZ} ||= &quot;baz&quot;;
+    }
+
+    sub print {
+        print join &quot;, &quot; =&gt; map { $self-&gt;{$_} } FOO, BAR, BAZ;
+    }</code></pre>
+
+<p>Subclass it</p>
+
+<pre><code>    package My::Subclass;
+    use strict;
+    use warnings;
+
+    # Note, you should subclass before loading HashBase.
+    use base &#39;My::Class&#39;;
+    use Test2::Util::HashBase qw/bat/;
+
+    sub init {
+        my $self = shift;
+
+        # We get the constants from the base class for free.
+        $self-&gt;{+FOO} ||= &#39;SubFoo&#39;;
+        $self-&gt;{+BAT} ||= &#39;bat&#39;;
+
+        $self-&gt;SUPER::init();
+    }</code></pre>
+
+<p>use it:</p>
+
+<pre><code>    package main;
+    use strict;
+    use warnings;
+    use My::Class;
+
+    # These are all functionally identical
+    my $one   = My::Class-&gt;new(foo =&gt; &#39;MyFoo&#39;, bar =&gt; &#39;MyBar&#39;);
+    my $two   = My::Class-&gt;new({foo =&gt; &#39;MyFoo&#39;, bar =&gt; &#39;MyBar&#39;});
+    my $three = My::Class-&gt;new([&#39;MyFoo&#39;, &#39;MyBar&#39;]);
+
+    # Accessors!
+    my $foo = $one-&gt;foo;    # &#39;MyFoo&#39;
+    my $bar = $one-&gt;bar;    # &#39;MyBar&#39;
+    my $baz = $one-&gt;baz;    # Defaulted to: &#39;baz&#39;
+
+    # Setters!
+    $one-&gt;set_foo(&#39;A Foo&#39;);
+
+    #&#39;-bar&#39; means read-only, so the setter will throw an exception (but is defined).
+    $one-&gt;set_bar(&#39;A bar&#39;);
+
+    # &#39;^baz&#39; means deprecated setter, this will warn about the setter being
+    # deprecated.
+    $one-&gt;set_baz(&#39;A Baz&#39;);
+
+    $one-&gt;{+FOO} = &#39;xxx&#39;;</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This package is used to generate classes based on hashrefs. Using this class will give you a <code>new()</code> method, as well as generating accessors you request. Generated accessors will be getters, <code>set_ACCESSOR</code> setters will also be generated for you. You also get constants for each accessor (all caps) which return the key into the hash for that accessor. Single inheritance is also supported.</p>
+
+<h1 id="THIS-IS-A-BUNDLED-COPY-OF-HASHBASE">THIS IS A BUNDLED COPY OF HASHBASE</h1>
+
+<p>This is a bundled copy of <a>Object::HashBase</a>. This file was generated using the <code>/home/exodist/perl5/perlbrew/perls/main/bin/hashbase_inc.pl</code> script.</p>
+
+<h1 id="METHODS">METHODS</h1>
+
+<h2 id="PROVIDED-BY-HASH-BASE">PROVIDED BY HASH BASE</h2>
+
+<dl>
+
+<dt id="it-class-new-PAIRS">$it = $class-&gt;new(%PAIRS)</dt>
+<dd>
+
+</dd>
+<dt id="it-class-new-PAIRS1">$it = $class-&gt;new(\%PAIRS)</dt>
+<dd>
+
+</dd>
+<dt id="it-class-new-ORDERED_VALUES">$it = $class-&gt;new(\@ORDERED_VALUES)</dt>
+<dd>
+
+<p>Create a new instance.</p>
+
+<p>HashBase will not export <code>new()</code> if there is already a <code>new()</code> method in your packages inheritance chain.</p>
+
+<p><b>If you do not want this method you can define your own</b> you just have to declare it before loading <a href="file:/c|/perl/html/lib/Test2/Util/HashBase.html">Test2::Util::HashBase</a>.</p>
+
+<pre><code>    package My::Package;
+
+    # predeclare new() so that HashBase does not give us one.
+    sub new;
+
+    use Test2::Util::HashBase qw/foo bar baz/;
+
+    # Now we define our own new method.
+    sub new { ... }</code></pre>
+
+<p>This makes it so that HashBase sees that you have your own <code>new()</code> method. Alternatively you can define the method before loading HashBase instead of just declaring it, but that scatters your use statements.</p>
+
+<p>The most common way to create an object is to pass in key/value pairs where each key is an attribute and each value is what you want assigned to that attribute. No checking is done to verify the attributes or values are valid, you may do that in <code>init()</code> if desired.</p>
+
+<p>If you would like, you can pass in a hashref instead of pairs. When you do so the hashref will be copied, and the copy will be returned blessed as an object. There is no way to ask HashBase to bless a specific hashref.</p>
+
+<p>In some cases an object may only have 1 or 2 attributes, in which case a hashref may be too verbose for your liking. In these cases you can pass in an arrayref with only values. The values will be assigned to attributes in the order the attributes were listed. When there is inheritance involved the attributes from parent classes will come before subclasses.</p>
+
+</dd>
+</dl>
+
+<h2 id="HOOKS">HOOKS</h2>
+
+<dl>
+
+<dt id="self-init">$self-&gt;init()</dt>
+<dd>
+
+<p>This gives you the chance to set some default values to your fields. The only argument is <code>$self</code> with its indexes already set from the constructor.</p>
+
+<p><b>Note:</b> Test2::Util::HashBase checks for an init using <code>$class-&gt;can(&#39;init&#39;)</code> during construction. It DOES NOT call <code>can()</code> on the created object. Also note that the result of the check is cached, it is only ever checked once, the first time an instance of your class is created. This means that adding an <code>init()</code> method AFTER the first construction will result in it being ignored.</p>
+
+</dd>
+</dl>
+
+<h1 id="ACCESSORS">ACCESSORS</h1>
+
+<h2 id="READ-WRITE">READ/WRITE</h2>
+
+<p>To generate accessors you list them when using the module:</p>
+
+<pre><code>    use Test2::Util::HashBase qw/foo/;</code></pre>
+
+<p>This will generate the following subs in your namespace:</p>
+
+<dl>
+
+<dt id="foo">foo()</dt>
+<dd>
+
+<p>Getter, used to get the value of the <code>foo</code> field.</p>
+
+</dd>
+<dt id="set_foo">set_foo()</dt>
+<dd>
+
+<p>Setter, used to set the value of the <code>foo</code> field.</p>
+
+</dd>
+<dt id="FOO">FOO()</dt>
+<dd>
+
+<p>Constant, returns the field <code>foo</code>&#39;s key into the class hashref. Subclasses will also get this function as a constant, not simply a method, that means it is copied into the subclass namespace.</p>
+
+<p>The main reason for using these constants is to help avoid spelling mistakes and similar typos. It will not help you if you forget to prefix the &#39;+&#39; though.</p>
+
+</dd>
+</dl>
+
+<h2 id="READ-ONLY">READ ONLY</h2>
+
+<pre><code>    use Test2::Util::HashBase qw/-foo/;</code></pre>
+
+<dl>
+
+<dt id="set_foo1">set_foo()</dt>
+<dd>
+
+<p>Throws an exception telling you the attribute is read-only. This is exported to override any active setters for the attribute in a parent class.</p>
+
+</dd>
+</dl>
+
+<h2 id="DEPRECATED-SETTER">DEPRECATED SETTER</h2>
+
+<pre><code>    use Test2::Util::HashBase qw/^foo/;</code></pre>
+
+<dl>
+
+<dt id="set_foo2">set_foo()</dt>
+<dd>
+
+<p>This will set the value, but it will also warn you that the method is deprecated.</p>
+
+</dd>
+</dl>
+
+<h1 id="SUBCLASSING">SUBCLASSING</h1>
+
+<p>You can subclass an existing HashBase class.</p>
+
+<pre><code>    use base &#39;Another::HashBase::Class&#39;;
+    use Test2::Util::HashBase qw/foo bar baz/;</code></pre>
+
+<p>The base class is added to <code>@ISA</code> for you, and all constants from base classes are added to subclasses automatically.</p>
+
+<h1 id="GETTING-A-LIST-OF-ATTRIBUTES-FOR-A-CLASS">GETTING A LIST OF ATTRIBUTES FOR A CLASS</h1>
+
+<p>Test2::Util::HashBase provides a function for retrieving a list of attributes for an Test2::Util::HashBase class.</p>
+
+<dl>
+
+<dt id="list-Test2::Util::HashBase::attr_list-class">@list = Test2::Util::HashBase::attr_list($class)</dt>
+<dd>
+
+</dd>
+<dt id="list-class-Test2::Util::HashBase::attr_list">@list = $class-&gt;Test2::Util::HashBase::attr_list()</dt>
+<dd>
+
+<p>Either form above will work. This will return a list of attributes defined on the object. This list is returned in the attribute definition order, parent class attributes are listed before subclass attributes. Duplicate attributes will be removed before the list is returned.</p>
+
+<p><b>Note:</b> This list is used in the <code>$class-&gt;new(\@ARRAY)</code> constructor to determine the attribute to which each value will be paired.</p>
+
+</dd>
+</dl>
+
+<h1 id="SOURCE">SOURCE</h1>
+
+<p>The source code repository for HashBase can be found at <i>http://github.com/Test-More/HashBase/</i>.</p>
+
+<h1 id="MAINTAINERS">MAINTAINERS</h1>
+
+<dl>
+
+<dt id="Chad-Granum-exodist-cpan.org">Chad Granum &lt;exodist@cpan.org&gt;</dt>
+<dd>
+
+</dd>
+</dl>
+
+<h1 id="AUTHORS">AUTHORS</h1>
+
+<dl>
+
+<dt id="Chad-Granum-exodist-cpan.org1">Chad Granum &lt;exodist@cpan.org&gt;</dt>
+<dd>
+
+</dd>
+</dl>
+
+<h1 id="COPYRIGHT">COPYRIGHT</h1>
+
+<p>Copyright 2019 Chad Granum &lt;exodist@cpan.org&gt;.</p>
+
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.</p>
+
+<p>See <i>http://dev.perl.org/licenses/</i></p>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;Test2::Util::HashBase - Build hash based classes.</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
+
+

@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;</span></strong></big>
+</td></tr>
+</table>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#SYNOPSIS">SYNOPSIS</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a>
+    <ul>
+      <li><a href="#use-if">use if</a></li>
+      <li><a href="#no-if">no if</a></li>
+    </ul>
+  </li>
+  <li><a href="#BUGS">BUGS</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+  <li><a href="#AUTHOR">AUTHOR</a></li>
+  <li><a href="#COPYRIGHT-AND-LICENCE">COPYRIGHT AND LICENCE</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>if - <code>use</code> a Perl module if a condition holds</p>
+
+<h1 id="SYNOPSIS">SYNOPSIS</h1>
+
+<pre><code>    use if CONDITION, &quot;MODULE&quot;, ARGUMENTS;
+    no  if CONDITION, &quot;MODULE&quot;, ARGUMENTS;</code></pre>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<h2 id="use-if"><code>use if</code></h2>
+
+<p>The <code>if</code> module is used to conditionally load another module. The construct:</p>
+
+<pre><code>    use if CONDITION, &quot;MODULE&quot;, ARGUMENTS;</code></pre>
+
+<p>... will load <code>MODULE</code> only if <code>CONDITION</code> evaluates to true; it has no effect if <code>CONDITION</code> evaluates to false. (The module name, assuming it contains at least one <code>::</code>, must be quoted when <code>&#39;use strict &quot;subs&quot;;&#39;</code> is in effect.) If the CONDITION does evaluate to true, then the above line has the same effect as:</p>
+
+<pre><code>    use MODULE ARGUMENTS;</code></pre>
+
+<p>For example, the <i>Unicode::UCD</i> module&#39;s <i>charinfo</i> function will use two functions from <i>Unicode::Normalize</i> only if a certain condition is met:</p>
+
+<pre><code>    use if defined &amp;DynaLoader::boot_DynaLoader,
+        &quot;Unicode::Normalize&quot; =&gt; qw(getCombinClass NFD);</code></pre>
+
+<p>Suppose you wanted <code>ARGUMENTS</code> to be an empty list, <i>i.e.</i>, to have the effect of:</p>
+
+<pre><code>    use MODULE ();</code></pre>
+
+<p>You can&#39;t do this with the <code>if</code> pragma; however, you can achieve exactly this effect, at compile time, with:</p>
+
+<pre><code>    BEGIN { require MODULE if CONDITION }</code></pre>
+
+<h2 id="no-if"><code>no if</code></h2>
+
+<p>The <code>no if</code> construct is mainly used to deactivate categories of warnings when those categories would produce superfluous output under specified versions of <i>perl</i>.</p>
+
+<p>For example, the <code>redundant</code> category of warnings was introduced in Perl-5.22. This warning flags certain instances of superfluous arguments to <code>printf</code> and <code>sprintf</code>. But if your code was running warnings-free on earlier versions of <i>perl</i> and you don&#39;t care about <code>redundant</code> warnings in more recent versions, you can call:</p>
+
+<pre><code>    use warnings;
+    no if $] &gt;= 5.022, q|warnings|, qw(redundant);
+
+    my $test    = { fmt  =&gt; &quot;%s&quot;, args =&gt; [ qw( x y ) ] };
+    my $result  = sprintf $test-&gt;{fmt}, @{$test-&gt;{args}};</code></pre>
+
+<p>The <code>no if</code> construct assumes that a module or pragma has correctly implemented an <code>unimport()</code> method -- but most modules and pragmata have not. That explains why the <code>no if</code> construct is of limited applicability.</p>
+
+<h1 id="BUGS">BUGS</h1>
+
+<p>The current implementation does not allow specification of the required version of the module.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p><a>Module::Requires</a> can be used to conditionally load one or modules, with constraints based on the version of the module. Unlike <code>if</code> though, <a>Module::Requires</a> is not a core module.</p>
+
+<p><a href="file:/c|/perl/html/lib/Module/Load/Conditional.html">Module::Load::Conditional</a> provides a number of functions you can use to query what modules are available, and then load one or more of them at runtime.</p>
+
+<p>The <a>provide</a> module from CPAN can be used to select one of several possible modules to load based on the version of Perl that is running.</p>
+
+<h1 id="AUTHOR">AUTHOR</h1>
+
+<p>Ilya Zakharevich <a href="mailto:ilyaz@cpan.org">mailto:ilyaz@cpan.org</a>.</p>
+
+<h1 id="COPYRIGHT-AND-LICENCE">COPYRIGHT AND LICENCE</h1>
+
+<p>This software is copyright (c) 2002 by Ilya Zakharevich.</p>
+
+<p>This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.</p>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
+
+

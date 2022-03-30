@@ -1,0 +1,1774 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>perl5280delta - what is new for perl v5.28.0</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;perl5280delta - what is new for perl v5.28.0</span></strong></big>
+</td></tr>
+</table>
+
+
+
+<ul id="index">
+  <li><a href="#NAME">NAME</a></li>
+  <li><a href="#DESCRIPTION">DESCRIPTION</a></li>
+  <li><a href="#Core-Enhancements">Core Enhancements</a>
+    <ul>
+      <li><a href="#Unicode-10.0-is-supported">Unicode 10.0 is supported</a></li>
+      <li><a href="#delete-on-key-value-hash-slices">delete on key/value hash slices</a></li>
+      <li><a href="#Experimentally-there-are-now-alphabetic-synonyms-for-some-regular-expression-assertions">Experimentally, there are now alphabetic synonyms for some regular expression assertions</a></li>
+      <li><a href="#Mixed-Unicode-scripts-are-now-detectable">Mixed Unicode scripts are now detectable</a></li>
+      <li><a href="#In-place-editing-with-perl--i-is-now-safer">In-place editing with perl -i is now safer</a></li>
+      <li><a href="#Initialisation-of-aggregate-state-variables">Initialisation of aggregate state variables</a></li>
+      <li><a href="#Full-size-inode-numbers">Full-size inode numbers</a></li>
+      <li><a href="#The-sprintf-j-format-size-modifier-is-now-available-with-pre-C99-compilers">The sprintf %j format size modifier is now available with pre-C99 compilers</a></li>
+      <li><a href="#Close-on-exec-flag-set-atomically">Close-on-exec flag set atomically</a></li>
+      <li><a href="#String--and-number-specific-bitwise-ops-are-no-longer-experimental">String- and number-specific bitwise ops are no longer experimental</a></li>
+      <li><a href="#Locales-are-now-thread-safe-on-systems-that-support-them">Locales are now thread-safe on systems that support them</a></li>
+      <li><a href="#New-read-only-predefined-variable-SAFE_LOCALES">New read-only predefined variable ${^SAFE_LOCALES}</a></li>
+    </ul>
+  </li>
+  <li><a href="#Security">Security</a>
+    <ul>
+      <li><a href="#CVE-2017-12837-Heap-buffer-overflow-in-regular-expression-compiler">[CVE-2017-12837] Heap buffer overflow in regular expression compiler</a></li>
+      <li><a href="#CVE-2017-12883-Buffer-over-read-in-regular-expression-parser">[CVE-2017-12883] Buffer over-read in regular expression parser</a></li>
+      <li><a href="#CVE-2017-12814-ENV-key-stack-buffer-overflow-on-Windows">[CVE-2017-12814] $ENV{$key} stack buffer overflow on Windows</a></li>
+      <li><a href="#Default-Hash-Function-Change">Default Hash Function Change</a></li>
+    </ul>
+  </li>
+  <li><a href="#Incompatible-Changes">Incompatible Changes</a>
+    <ul>
+      <li><a href="#Subroutine-attribute-and-signature-order">Subroutine attribute and signature order</a></li>
+      <li><a href="#Comma-less-variable-lists-in-formats-are-no-longer-allowed">Comma-less variable lists in formats are no longer allowed</a></li>
+      <li><a href="#The-:locked-and-:unique-attributes-have-been-removed">The :locked and :unique attributes have been removed</a></li>
+      <li><a href="#N-with-nothing-between-the-braces-is-now-illegal">\N{} with nothing between the braces is now illegal</a></li>
+      <li><a href="#Opening-the-same-symbol-as-both-a-file-and-directory-handle-is-no-longer-allowed">Opening the same symbol as both a file and directory handle is no longer allowed</a></li>
+      <li><a href="#Use-of-bare-to-mean-is-no-longer-allowed">Use of bare &lt;&lt; to mean &lt;&lt;&quot;&quot; is no longer allowed</a></li>
+      <li><a href="#Setting-to-a-reference-to-a-non-positive-integer-no-longer-allowed">Setting $/ to a reference to a non-positive integer no longer allowed</a></li>
+      <li><a href="#Unicode-code-points-with-values-exceeding-IV_MAX-are-now-fatal">Unicode code points with values exceeding IV_MAX are now fatal</a></li>
+      <li><a href="#The-B::OP::terse-method-has-been-removed">The B::OP::terse method has been removed</a></li>
+      <li><a href="#Use-of-inherited-AUTOLOAD-for-non-methods-is-no-longer-allowed">Use of inherited AUTOLOAD for non-methods is no longer allowed</a></li>
+      <li><a href="#Use-of-strings-with-code-points-over-0xFF-is-not-allowed-for-bitwise-string-operators">Use of strings with code points over 0xFF is not allowed for bitwise string operators</a></li>
+      <li><a href="#Setting-ENCODING-to-a-defined-value-is-now-illegal">Setting ${^ENCODING} to a defined value is now illegal</a></li>
+      <li><a href="#Backslash-no-longer-escapes-colon-in-PATH-for-the--S-switch">Backslash no longer escapes colon in PATH for the -S switch</a></li>
+      <li><a href="#the--DH-DEBUG_H-misfeature-has-been-removed">the -DH (DEBUG_H) misfeature has been removed</a></li>
+      <li><a href="#Yada-yada-is-now-strictly-a-statement">Yada-yada is now strictly a statement</a></li>
+      <li><a href="#Sort-algorithm-can-no-longer-be-specified">Sort algorithm can no longer be specified</a></li>
+      <li><a href="#Over-radix-digits-in-floating-point-literals">Over-radix digits in floating point literals</a></li>
+      <li><a href="#Return-type-of-unpackstring">Return type of unpackstring()</a></li>
+    </ul>
+  </li>
+  <li><a href="#Deprecations">Deprecations</a>
+    <ul>
+      <li><a href="#Use-of-vec-on-strings-with-code-points-above-0xFF-is-deprecated">Use of vec on strings with code points above 0xFF is deprecated</a></li>
+      <li><a href="#Some-uses-of-unescaped-in-regexes-are-no-longer-fatal">Some uses of unescaped &quot;{&quot; in regexes are no longer fatal</a></li>
+      <li><a href="#Use-of-unescaped-immediately-after-a-in-regular-expression-patterns-is-deprecated">Use of unescaped &quot;{&quot; immediately after a &quot;(&quot; in regular expression patterns is deprecated</a></li>
+      <li><a href="#Assignment-to-will-be-fatal-in-Perl-5.30">Assignment to $[ will be fatal in Perl 5.30</a></li>
+      <li><a href="#hostname-wont-accept-arguments-in-Perl-5.32">hostname() won&#39;t accept arguments in Perl 5.32</a></li>
+      <li><a href="#Module-removals">Module removals</a></li>
+    </ul>
+  </li>
+  <li><a href="#Performance-Enhancements">Performance Enhancements</a></li>
+  <li><a href="#Modules-and-Pragmata">Modules and Pragmata</a>
+    <ul>
+      <li><a href="#Removal-of-use-vars">Removal of use vars</a></li>
+      <li><a href="#Use-of-DynaLoader-changed-to-XSLoader-in-many-modules">Use of DynaLoader changed to XSLoader in many modules</a></li>
+      <li><a href="#Updated-Modules-and-Pragmata">Updated Modules and Pragmata</a></li>
+      <li><a href="#Removed-Modules-and-Pragmata">Removed Modules and Pragmata</a></li>
+    </ul>
+  </li>
+  <li><a href="#Documentation">Documentation</a>
+    <ul>
+      <li><a href="#Changes-to-Existing-Documentation">Changes to Existing Documentation</a>
+        <ul>
+          <li><a href="#perlapi">perlapi</a></li>
+          <li><a href="#perldata">perldata</a></li>
+          <li><a href="#perldebguts">perldebguts</a></li>
+          <li><a href="#perldiag">perldiag</a></li>
+          <li><a href="#perlembed">perlembed</a></li>
+          <li><a href="#perlfunc">perlfunc</a></li>
+          <li><a href="#perlgit">perlgit</a></li>
+          <li><a href="#perlguts">perlguts</a></li>
+          <li><a href="#perlintern">perlintern</a></li>
+          <li><a href="#perlobj">perlobj</a></li>
+          <li><a href="#perlop">perlop</a></li>
+          <li><a href="#perlrequick">perlrequick</a></li>
+          <li><a href="#perlretut">perlretut</a></li>
+          <li><a href="#perlrun">perlrun</a></li>
+          <li><a href="#perlsec">perlsec</a></li>
+          <li><a href="#perlsyn">perlsyn</a></li>
+          <li><a href="#perluniprops">perluniprops</a></li>
+          <li><a href="#perlvar">perlvar</a></li>
+          <li><a href="#perlfunc-perlop-perlsyn">perlfunc, perlop, perlsyn</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#Diagnostics">Diagnostics</a>
+    <ul>
+      <li><a href="#New-Diagnostics">New Diagnostics</a>
+        <ul>
+          <li><a href="#New-Errors">New Errors</a></li>
+          <li><a href="#New-Warnings">New Warnings</a></li>
+        </ul>
+      </li>
+      <li><a href="#Changes-to-Existing-Diagnostics">Changes to Existing Diagnostics</a></li>
+    </ul>
+  </li>
+  <li><a href="#Utility-Changes">Utility Changes</a>
+    <ul>
+      <li><a href="#perlbug">perlbug</a></li>
+    </ul>
+  </li>
+  <li><a href="#Configuration-and-Compilation">Configuration and Compilation</a></li>
+  <li><a href="#Testing">Testing</a></li>
+  <li><a href="#Packaging">Packaging</a></li>
+  <li><a href="#Platform-Support">Platform Support</a>
+    <ul>
+      <li><a href="#Discontinued-Platforms">Discontinued Platforms</a></li>
+      <li><a href="#Platform-Specific-Notes">Platform-Specific Notes</a></li>
+    </ul>
+  </li>
+  <li><a href="#Internal-Changes">Internal Changes</a></li>
+  <li><a href="#Selected-Bug-Fixes">Selected Bug Fixes</a></li>
+  <li><a href="#Acknowledgements">Acknowledgements</a></li>
+  <li><a href="#Reporting-Bugs">Reporting Bugs</a></li>
+  <li><a href="#Give-Thanks">Give Thanks</a></li>
+  <li><a href="#SEE-ALSO">SEE ALSO</a></li>
+</ul>
+
+<h1 id="NAME">NAME</h1>
+
+<p>perl5280delta - what is new for perl v5.28.0</p>
+
+<h1 id="DESCRIPTION">DESCRIPTION</h1>
+
+<p>This document describes differences between the 5.26.0 release and the 5.28.0 release.</p>
+
+<p>If you are upgrading from an earlier release such as 5.24.0, first read <a href="file:/c|/perl/html/pod/perl5260delta.html">perl5260delta</a>, which describes differences between 5.24.0 and 5.26.0.</p>
+
+<h1 id="Core-Enhancements">Core Enhancements</h1>
+
+<h2 id="Unicode-10.0-is-supported">Unicode 10.0 is supported</h2>
+
+<p>A list of changes is at <a href="http://www.unicode.org/versions/Unicode10.0.0">http://www.unicode.org/versions/Unicode10.0.0</a>.</p>
+
+<h2 id="delete-on-key-value-hash-slices"><a href="file:/c|/perl/html/pod/perlfunc.html#delete-EXPR"><code>delete</code></a> on key/value hash slices</h2>
+
+<p><a href="file:/c|/perl/html/pod/perlfunc.html#delete-EXPR"><code>delete</code></a> can now be used on <a href="file:/c|/perl/html/pod/perldata.html#Key-Value-Hash-Slices">key/value hash slices</a>, returning the keys along with the deleted values. <a href="https://rt.perl.org/Ticket/Display.html?id=131328">[perl #131328]</a></p>
+
+<h2 id="Experimentally-there-are-now-alphabetic-synonyms-for-some-regular-expression-assertions">Experimentally, there are now alphabetic synonyms for some regular expression assertions</h2>
+
+<p>If you find it difficult to remember how to write certain of the pattern assertions, there are now alphabetic synonyms.</p>
+
+<pre><code> CURRENT                NEW SYNONYMS
+ ------                 ------------
+ (?=...)        (*pla:...) or (*positive_lookahead:...)
+ (?!...)        (*nla:...) or (*negative_lookahead:...)
+ (?&lt;=...)       (*plb:...) or (*positive_lookbehind:...)
+ (?&lt;!...)       (*nlb:...) or (*negative_lookbehind:...)
+ (?&gt;...)        (*atomic:...)</code></pre>
+
+<p>These are considered experimental, so using any of these will raise (unless turned off) a warning in the <code>experimental::alpha_assertions</code> category.</p>
+
+<h2 id="Mixed-Unicode-scripts-are-now-detectable">Mixed Unicode scripts are now detectable</h2>
+
+<p>A mixture of scripts, such as Cyrillic and Latin, in a string is often the sign of a spoofing attack. A new regular expression construct now allows for easy detection of these. For example, you can say</p>
+
+<pre><code> qr/(*script_run: \d+ \b )/x</code></pre>
+
+<p>And the digits matched will all be from the same set of 10. You won&#39;t get a look-alike digit from a different script that has a different value than what it appears to be.</p>
+
+<p>Or:</p>
+
+<pre><code> qr/(*sr: \b \w+ \b )/x</code></pre>
+
+<p>makes sure that all the characters come from the same script.</p>
+
+<p>You can also combine script runs with <code>(?&gt;...)</code> (or <code>*atomic:...)</code>).</p>
+
+<p>Instead of writing:</p>
+
+<pre><code>    (*sr:(?&lt;...))</code></pre>
+
+<p>you can now run:</p>
+
+<pre><code>    (*asr:...)
+    # or
+    (*atomic_script_run:...)</code></pre>
+
+<p>This is considered experimental, so using it will raise (unless turned off) a warning in the <code>experimental::script_run</code> category.</p>
+
+<p>See <a href="file:/c|/perl/html/pod/perlre.html#Script-Runs">&quot;Script Runs&quot; in perlre</a>.</p>
+
+<h2 id="In-place-editing-with-perl--i-is-now-safer">In-place editing with <code>perl -i</code> is now safer</h2>
+
+<p>Previously in-place editing (<code>perl -i</code>) would delete or rename the input file as soon as you started working on a new file.</p>
+
+<p>Without backups this would result in loss of data if there was an error, such as a full disk, when writing to the output file.</p>
+
+<p>This has changed so that the input file isn&#39;t replaced until the output file has been completely written and successfully closed.</p>
+
+<p>This works by creating a work file in the same directory, which is renamed over the input file once the output file is complete.</p>
+
+<p>Incompatibilities:</p>
+
+<ul>
+
+<li><p>Since this renaming needs to only happen once, if you create a thread or child process, that renaming will only happen in the original thread or process.</p>
+
+</li>
+<li><p>If you change directories while processing a file, and your operating system doesn&#39;t provide the <code>unlinkat()</code>, <code>renameat()</code> and <code>fchmodat()</code> functions, the final rename step may fail.</p>
+
+</li>
+</ul>
+
+<p><a href="https://rt.perl.org/Public/Bug/Display.html?id=127663">[perl #127663]</a></p>
+
+<h2 id="Initialisation-of-aggregate-state-variables">Initialisation of aggregate state variables</h2>
+
+<p>A persistent lexical array or hash variable can now be initialized, by an expression such as <code>state @a = qw(x y z)</code>. Initialization of a list of persistent lexical variables is still not possible.</p>
+
+<h2 id="Full-size-inode-numbers">Full-size inode numbers</h2>
+
+<p>On platforms where inode numbers are of a type larger than perl&#39;s native integer numerical types, <a href="file:/c|/perl/html/pod/perlfunc.html#stat">stat</a> will preserve the full content of large inode numbers by returning them in the form of strings of decimal digits. Exact comparison of inode numbers can thus be achieved by comparing with <code>eq</code> rather than <code>==</code>. Comparison with <code>==</code>, and other numerical operations (which are usually meaningless on inode numbers), work as well as they did before, which is to say they fall back to floating point, and ultimately operate on a fairly useless rounded inode number if the real inode number is too big for the floating point format.</p>
+
+<h2 id="The-sprintf-j-format-size-modifier-is-now-available-with-pre-C99-compilers">The <code>sprintf</code> <code>%j</code> format size modifier is now available with pre-C99 compilers</h2>
+
+<p>The actual size used depends on the platform, so remains unportable.</p>
+
+<h2 id="Close-on-exec-flag-set-atomically">Close-on-exec flag set atomically</h2>
+
+<p>When opening a file descriptor, perl now generally opens it with its close-on-exec flag already set, on platforms that support doing so. This improves thread safety, because it means that an <code>exec</code> initiated by one thread can no longer cause a file descriptor in the process of being opened by another thread to be accidentally passed to the executed program.</p>
+
+<p>Additionally, perl now sets the close-on-exec flag more reliably, whether it does so atomically or not. Most file descriptors were getting the flag set, but some were being missed.</p>
+
+<h2 id="String--and-number-specific-bitwise-ops-are-no-longer-experimental">String- and number-specific bitwise ops are no longer experimental</h2>
+
+<p>The new string-specific (<code>&amp;. |. ^. ~.</code>) and number-specific (<code>&amp; | ^ ~</code>) bitwise operators introduced in Perl 5.22 that are available within the scope of <code>use feature &#39;bitwise&#39;</code> are no longer experimental. Because the number-specific ops are spelled the same way as the existing operators that choose their behaviour based on their operands, these operators must still be enabled via the &quot;bitwise&quot; feature, in either of these two ways:</p>
+
+<pre><code>    use feature &quot;bitwise&quot;;
+
+    use v5.28; # &quot;bitwise&quot; now included</code></pre>
+
+<p>They are also now enabled by the <b>-E</b> command-line switch.</p>
+
+<p>The &quot;bitwise&quot; feature no longer emits a warning. Existing code that disables the &quot;experimental::bitwise&quot; warning category that the feature previously used will continue to work.</p>
+
+<p>One caveat that module authors ought to be aware of is that the numeric operators now pass a fifth TRUE argument to overload methods. Any methods that check the number of operands may croak if they do not expect so many. XS authors in particular should be aware that this:</p>
+
+<pre><code>    SV *
+    bitop_handler (lobj, robj, swap)</code></pre>
+
+<p>may need to be changed to this:</p>
+
+<pre><code>    SV *
+    bitop_handler (lobj, robj, swap, ...)</code></pre>
+
+<h2 id="Locales-are-now-thread-safe-on-systems-that-support-them">Locales are now thread-safe on systems that support them</h2>
+
+<p>These systems include Windows starting with Visual Studio 2005, and in POSIX 2008 systems.</p>
+
+<p>The implication is that you are now free to use locales and change them in a threaded environment. Your changes affect only your thread. See <a href="file:/c|/perl/html/pod/perllocale.html#Multi-threaded-operation">&quot;Multi-threaded operation&quot; in perllocale</a></p>
+
+<h2 id="New-read-only-predefined-variable-SAFE_LOCALES">New read-only predefined variable <code>${^SAFE_LOCALES}</code></h2>
+
+<p>This variable is 1 if the Perl interpreter is operating in an environment where it is safe to use and change locales (see <a href="file:/c|/perl/html/pod/perllocale.html">perllocale</a>.) This variable is true when the perl is unthreaded, or compiled in a platform that supports thread-safe locale operation (see previous item).</p>
+
+<h1 id="Security">Security</h1>
+
+<h2 id="CVE-2017-12837-Heap-buffer-overflow-in-regular-expression-compiler">[CVE-2017-12837] Heap buffer overflow in regular expression compiler</h2>
+
+<p>Compiling certain regular expression patterns with the case-insensitive modifier could cause a heap buffer overflow and crash perl. This has now been fixed. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131582">[perl #131582]</a></p>
+
+<h2 id="CVE-2017-12883-Buffer-over-read-in-regular-expression-parser">[CVE-2017-12883] Buffer over-read in regular expression parser</h2>
+
+<p>For certain types of syntax error in a regular expression pattern, the error message could either contain the contents of a random, possibly large, chunk of memory, or could crash perl. This has now been fixed. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131598">[perl #131598]</a></p>
+
+<h2 id="CVE-2017-12814-ENV-key-stack-buffer-overflow-on-Windows">[CVE-2017-12814] <code>$ENV{$key}</code> stack buffer overflow on Windows</h2>
+
+<p>A possible stack buffer overflow in the <code>%ENV</code> code on Windows has been fixed by removing the buffer completely since it was superfluous anyway. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131665">[perl #131665]</a></p>
+
+<h2 id="Default-Hash-Function-Change">Default Hash Function Change</h2>
+
+<p>Perl 5.28.0 retires various older hash functions which are not viewed as sufficiently secure for use in Perl. We now support four general purpose hash functions, Siphash (2-4 and 1-3 variants), and Zaphod32, and StadtX hash. In addition we support SBOX32 (a form of tabular hashing) for hashing short strings, in conjunction with any of the other hash functions provided.</p>
+
+<p>By default Perl is configured to support SBOX hashing of strings up to 24 characters, in conjunction with StadtX hashing on 64 bit builds, and Zaphod32 hashing for 32 bit builds.</p>
+
+<p>You may control these settings with the following options to Configure:</p>
+
+<pre><code>    -DPERL_HASH_FUNC_SIPHASH
+    -DPERL_HASH_FUNC_SIPHASH13
+    -DPERL_HASH_FUNC_STADTX
+    -DPERL_HASH_FUNC_ZAPHOD32</code></pre>
+
+<p>To disable SBOX hashing you can use</p>
+
+<pre><code>    -DPERL_HASH_USE_SBOX32_ALSO=0</code></pre>
+
+<p>And to set the maximum length to use SBOX32 hashing on with:</p>
+
+<pre><code>    -DSBOX32_MAX_LEN=16</code></pre>
+
+<p>The maximum length allowed is 256. There probably isn&#39;t much point in setting it higher than the default.</p>
+
+<h1 id="Incompatible-Changes">Incompatible Changes</h1>
+
+<h2 id="Subroutine-attribute-and-signature-order">Subroutine attribute and signature order</h2>
+
+<p>The experimental subroutine signatures feature has been changed so that subroutine attributes must now come before the signature rather than after. This is because attributes like <code>:lvalue</code> can affect the compilation of code within the signature, for example:</p>
+
+<pre><code>    sub f :lvalue ($a = do { $x = &quot;abc&quot;; return substr($x,0,1)}) { ...}</code></pre>
+
+<p>Note that this the second time they have been flipped:</p>
+
+<pre><code>    sub f :lvalue ($a, $b) { ... }; # 5.20; 5.28 onwards
+    sub f ($a, $b) :lvalue { ... }; # 5.22 - 5.26</code></pre>
+
+<h2 id="Comma-less-variable-lists-in-formats-are-no-longer-allowed">Comma-less variable lists in formats are no longer allowed</h2>
+
+<p>Omitting the commas between variables passed to formats is no longer allowed. This has been deprecated since Perl 5.000.</p>
+
+<h2 id="The-:locked-and-:unique-attributes-have-been-removed">The <code>:locked</code> and <code>:unique</code> attributes have been removed</h2>
+
+<p>These have been no-ops and deprecated since Perl 5.12 and 5.10, respectively.</p>
+
+<h2 id="N-with-nothing-between-the-braces-is-now-illegal"><code>\N{}</code> with nothing between the braces is now illegal</h2>
+
+<p>This has been deprecated since Perl 5.24.</p>
+
+<h2 id="Opening-the-same-symbol-as-both-a-file-and-directory-handle-is-no-longer-allowed">Opening the same symbol as both a file and directory handle is no longer allowed</h2>
+
+<p>Using <code>open()</code> and <code>opendir()</code> to associate both a filehandle and a dirhandle to the same symbol (glob or scalar) has been deprecated since Perl 5.10.</p>
+
+<h2 id="Use-of-bare-to-mean-is-no-longer-allowed">Use of bare <code>&lt;&lt;</code> to mean <code>&lt;&lt;&quot;&quot;</code> is no longer allowed</h2>
+
+<p>Use of a bare terminator has been deprecated since Perl 5.000.</p>
+
+<h2 id="Setting-to-a-reference-to-a-non-positive-integer-no-longer-allowed">Setting $/ to a reference to a non-positive integer no longer allowed</h2>
+
+<p>This used to work like setting it to <code>undef</code>, but has been deprecated since Perl 5.20.</p>
+
+<h2 id="Unicode-code-points-with-values-exceeding-IV_MAX-are-now-fatal">Unicode code points with values exceeding <code>IV_MAX</code> are now fatal</h2>
+
+<p>This was deprecated since Perl 5.24.</p>
+
+<h2 id="The-B::OP::terse-method-has-been-removed">The <code>B::OP::terse</code> method has been removed</h2>
+
+<p>Use <code>B::Concise::b_terse</code> instead.</p>
+
+<h2 id="Use-of-inherited-AUTOLOAD-for-non-methods-is-no-longer-allowed">Use of inherited AUTOLOAD for non-methods is no longer allowed</h2>
+
+<p>This was deprecated in Perl 5.004.</p>
+
+<h2 id="Use-of-strings-with-code-points-over-0xFF-is-not-allowed-for-bitwise-string-operators">Use of strings with code points over 0xFF is not allowed for bitwise string operators</h2>
+
+<p>Code points over <code>0xFF</code> do not make sense for bitwise operators and such an operation will now croak, except for a few remaining cases. See <a href="file:/c|/perl/html/pod/perldeprecation.html">perldeprecation</a>.</p>
+
+<p>This was deprecated in Perl 5.24.</p>
+
+<h2 id="Setting-ENCODING-to-a-defined-value-is-now-illegal">Setting <code>${^ENCODING}</code> to a defined value is now illegal</h2>
+
+<p>This has been deprecated since Perl 5.22 and a no-op since Perl 5.26.</p>
+
+<h2 id="Backslash-no-longer-escapes-colon-in-PATH-for-the--S-switch">Backslash no longer escapes colon in PATH for the <code>-S</code> switch</h2>
+
+<p>Previously the <code>-S</code> switch incorrectly treated backslash (&quot;\&quot;) as an escape for colon when traversing the <code>PATH</code> environment variable. <a href="https://rt.perl.org/Ticket/Display.html?id=129183">[perl #129183]</a></p>
+
+<h2 id="the--DH-DEBUG_H-misfeature-has-been-removed">the -DH (DEBUG_H) misfeature has been removed</h2>
+
+<p>On a perl built with debugging support, the <code>H</code> flag to the <code>-D</code> debugging option has been removed. This was supposed to dump hash values, but has been broken for many years.</p>
+
+<h2 id="Yada-yada-is-now-strictly-a-statement">Yada-yada is now strictly a statement</h2>
+
+<p>By the time of its initial stable release in Perl 5.12, the <code>...</code> (yada-yada) operator was explicitly intended to serve as a statement, not an expression. However, the original implementation was confused on this point, leading to inconsistent parsing. The operator was accidentally accepted in a few situations where it did not serve as a complete statement, such as</p>
+
+<pre><code>    ... . &quot;foo&quot;;
+    ... if $a &lt; $b;</code></pre>
+
+<p>The parsing has now been made consistent, permitting yada-yada only as a statement. Affected code can use <code>do{...}</code> to put a yada-yada into an arbitrary expression context.</p>
+
+<h2 id="Sort-algorithm-can-no-longer-be-specified">Sort algorithm can no longer be specified</h2>
+
+<p>Since Perl 5.8, the <a href="file:/c|/perl/html/lib/sort.html">sort</a> pragma has had subpragmata <code>_mergesort</code>, <code>_quicksort</code>, and <code>_qsort</code> that can be used to specify which algorithm perl should use to implement the <a href="file:/c|/perl/html/pod/perlfunc.html#sort">sort</a> builtin. This was always considered a dubious feature that might not last, hence the underscore spellings, and they were documented as not being portable beyond Perl 5.8. These subpragmata have now been deleted, and any attempt to use them is an error. The <a href="file:/c|/perl/html/lib/sort.html">sort</a> pragma otherwise remains, and the algorithm-neutral <code>stable</code> subpragma can be used to control sorting behaviour. <a href="https://rt.perl.org/Ticket/Display.html?id=119635">[perl #119635]</a></p>
+
+<h2 id="Over-radix-digits-in-floating-point-literals">Over-radix digits in floating point literals</h2>
+
+<p>Octal and binary floating point literals used to permit any hexadecimal digit to appear after the radix point. The digits are now restricted to those appropriate for the radix, as digits before the radix point always were.</p>
+
+<h2 id="Return-type-of-unpackstring">Return type of <code>unpackstring()</code></h2>
+
+<p>The return types of the C API functions <code>unpackstring()</code> and <code>unpack_str()</code> have changed from <code>I32</code> to <code>SSize_t</code>, in order to accommodate datasets of more than two billion items.</p>
+
+<h1 id="Deprecations">Deprecations</h1>
+
+<h2 id="Use-of-vec-on-strings-with-code-points-above-0xFF-is-deprecated">Use of <a href="file:/c|/perl/html/pod/perlfunc.html#vec-EXPR-OFFSET-BITS"><code>vec</code></a> on strings with code points above 0xFF is deprecated</h2>
+
+<p>Such strings are represented internally in UTF-8, and <code>vec</code> is a bit-oriented operation that will likely give unexpected results on those strings.</p>
+
+<h2 id="Some-uses-of-unescaped-in-regexes-are-no-longer-fatal">Some uses of unescaped <code>&quot;{&quot;</code> in regexes are no longer fatal</h2>
+
+<p>Perl 5.26.0 fatalized some uses of an unescaped left brace, but an exception was made at the last minute, specifically crafted to be a minimal change to allow GNU Autoconf to work. That tool is heavily depended upon, and continues to use the deprecated usage. Its use of an unescaped left brace is one where we have no intention of repurposing <code>&quot;{&quot;</code> to be something other than itself.</p>
+
+<p>That exception is now generalized to include various other such cases where the <code>&quot;{&quot;</code> will not be repurposed.</p>
+
+<p>Note that these uses continue to raise a deprecation message.</p>
+
+<h2 id="Use-of-unescaped-immediately-after-a-in-regular-expression-patterns-is-deprecated">Use of unescaped <code>&quot;{&quot;</code> immediately after a <code>&quot;(&quot;</code> in regular expression patterns is deprecated</h2>
+
+<p>Using unescaped left braces is officially deprecated everywhere, but it is not enforced in contexts where their use does not interfere with expected extensions to the language. A deprecation is added in this release when the brace appears immediately after an opening parenthesis. Before this, even if the brace was part of a legal quantifier, it was not interpreted as such, but as the literal characters, unlike other quantifiers that follow a <code>&quot;(&quot;</code> which are considered errors. Now, their use will raise a deprecation message, unless turned off.</p>
+
+<h2 id="Assignment-to-will-be-fatal-in-Perl-5.30">Assignment to <code>$[</code> will be fatal in Perl 5.30</h2>
+
+<p>Assigning a non-zero value to <a href="file:/c|/perl/html/pod/perlvar.html#pod"><code>$[</code></a> has been deprecated since Perl 5.12, but was never given a deadline for removal. This has now been scheduled for Perl 5.30.</p>
+
+<h2 id="hostname-wont-accept-arguments-in-Perl-5.32">hostname() won&#39;t accept arguments in Perl 5.32</h2>
+
+<p>Passing arguments to <code>Sys::Hostname::hostname()</code> was already deprecated, but didn&#39;t have a removal date. This has now been scheduled for Perl 5.32. <a href="https://rt.perl.org/Ticket/Display.html?id=124349">[perl #124349]</a></p>
+
+<h2 id="Module-removals">Module removals</h2>
+
+<p>The following modules will be removed from the core distribution in a future release, and will at that time need to be installed from CPAN. Distributions on CPAN which require these modules will need to list them as prerequisites.</p>
+
+<p>The core versions of these modules will now issue <code>&quot;deprecated&quot;</code>-category warnings to alert you to this fact. To silence these deprecation warnings, install the modules in question from CPAN.</p>
+
+<p>Note that these are (with rare exceptions) fine modules that you are encouraged to continue to use. Their disinclusion from core primarily hinges on their necessity to bootstrapping a fully functional, CPAN-capable Perl installation, not usually on concerns over their design.</p>
+
+<dl>
+
+<dt id="B::Debug">B::Debug</dt>
+<dd>
+
+</dd>
+<dt id="Locale::Codes-and-its-associated-Country-Currency-and-Language-modules"><a>Locale::Codes</a> and its associated Country, Currency and Language modules</dt>
+<dd>
+
+</dd>
+</dl>
+
+<h1 id="Performance-Enhancements">Performance Enhancements</h1>
+
+<ul>
+
+<li><p>The start up overhead for creating regular expression patterns with Unicode properties (<code>\p{...}</code>) has been greatly reduced in most cases.</p>
+
+</li>
+<li><p>Many string concatenation expressions are now considerably faster, due to the introduction internally of a <code>multiconcat</code> opcode which combines multiple concatenations, and optionally a <code>=</code> or <code>.=</code>, into a single action. For example, apart from retrieving <code>$s</code>, <code>$a</code> and <code>$b</code>, this whole expression is now handled as a single op:</p>
+
+<pre><code>    $s .= &quot;a=$a b=$b\n&quot;</code></pre>
+
+<p>As a special case, if the LHS of an assignment is a lexical variable or <code>my $s</code>, the op itself handles retrieving the lexical variable, which is faster.</p>
+
+<p>In general, the more the expression includes a mix of constant strings and variable expressions, the longer the expression, and the more it mixes together non-utf8 and utf8 strings, the more marked the performance improvement. For example on a <code>x86_64</code> system, this code has been benchmarked running four times faster:</p>
+
+<pre><code>    my $s;
+    my $a = &quot;ab\x{100}cde&quot;;
+    my $b = &quot;fghij&quot;;
+    my $c = &quot;\x{101}klmn&quot;;
+
+    for my $i (1..10_000_000) {
+        $s = &quot;\x{100}wxyz&quot;;
+        $s .= &quot;foo=$a bar=$b baz=$c&quot;;
+    }</code></pre>
+
+<p>In addition, <code>sprintf</code> expressions which have a constant format containing only <code>%s</code> and <code>%%</code> format elements, and which have a fixed number of arguments, are now also optimised into a <code>multiconcat</code> op.</p>
+
+</li>
+<li><p>The <code>ref()</code> builtin is now much faster in boolean context, since it no longer bothers to construct a temporary string like <code>Foo=ARRAY(0x134af48)</code>.</p>
+
+</li>
+<li><p><code>keys()</code> in void and scalar contexts is now more efficient.</p>
+
+</li>
+<li><p>The common idiom of comparing the result of index() with -1 is now specifically optimised, e.g.</p>
+
+<pre><code>    if (index(...) != -1) { ... }</code></pre>
+
+</li>
+<li><p><code>for()</code> loops and similar constructs are now more efficient in most cases.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/Glob.html">File::Glob</a> has been modified to remove unnecessary backtracking and recursion, thanks to Russ Cox. See <a href="https://research.swtch.com/glob">https://research.swtch.com/glob</a> for more details.</p>
+
+</li>
+<li><p>The XS-level <code>SvTRUE()</code> API function is now more efficient.</p>
+
+</li>
+<li><p>Various integer-returning ops are now more efficient in scalar/boolean context.</p>
+
+</li>
+<li><p>Slightly improved performance when parsing stash names. <a href="https://rt.perl.org/Public/Bug/Display.html?id=129990">[perl #129990]</a></p>
+
+</li>
+<li><p>Calls to <code>require</code> for an already loaded module are now slightly faster. <a href="https://rt.perl.org/Public/Bug/Display.html?id=132171">[perl #132171]</a></p>
+
+</li>
+<li><p>The performance of pattern matching <code>[[:ascii:]]</code> and <code>[[:^ascii:]]</code> has been improved significantly except on EBCDIC platforms.</p>
+
+</li>
+<li><p>Various optimizations have been applied to matching regular expression patterns, so under the right circumstances, significant performance gains may be noticed. But in an application with many varied patterns, little overall improvement likely will be seen.</p>
+
+</li>
+<li><p>Other optimizations have been applied to UTF-8 handling, but these are not typically a major factor in most applications.</p>
+
+</li>
+</ul>
+
+<h1 id="Modules-and-Pragmata">Modules and Pragmata</h1>
+
+<p>Key highlights in this release across several modules:</p>
+
+<h2 id="Removal-of-use-vars">Removal of use vars</h2>
+
+<p>The usage of <code>use vars</code> has been discouraged since the introduction of <code>our</code> in Perl 5.6.0. Where possible the usage of this pragma has now been removed from the Perl source code.</p>
+
+<p>This had a slight effect (for the better) on the output of WARNING_BITS in <a href="file:/c|/perl/html/lib/B/Deparse.html">B::Deparse</a>.</p>
+
+<h2 id="Use-of-DynaLoader-changed-to-XSLoader-in-many-modules">Use of DynaLoader changed to XSLoader in many modules</h2>
+
+<p>XSLoader is more modern, and most modules already require perl 5.6 or greater, so no functionality is lost by switching. In some cases, we have also made changes to the local implementation that may not be reflected in the version on CPAN due to a desire to maintain more backwards compatibility.</p>
+
+<h2 id="Updated-Modules-and-Pragmata">Updated Modules and Pragmata</h2>
+
+<ul>
+
+<li><p><a href="file:/c|/perl/html/lib/Archive/Tar.html">Archive::Tar</a> has been upgraded from version 2.24 to 2.30.</p>
+
+<p>This update also handled CVE-2018-12015: directory traversal vulnerability. <a href="https://rt.cpan.org/Ticket/Display.html?id=125523">[cpan #125523]</a></p>
+
+</li>
+<li><p><a>arybase</a> has been upgraded from version 0.12 to 0.15.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Attribute/Handlers.html">Attribute::Handlers</a> has been upgraded from version 0.99 to 1.01.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/attributes.html">attributes</a> has been upgraded from version 0.29 to 0.33.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/B.html">B</a> has been upgraded from version 1.68 to 1.74.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/B/Concise.html">B::Concise</a> has been upgraded from version 0.999 to 1.003.</p>
+
+</li>
+<li><p><a>B::Debug</a> has been upgraded from version 1.24 to 1.26.</p>
+
+<p>NOTE: <a>B::Debug</a> is deprecated and may be removed from a future version of Perl.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/B/Deparse.html">B::Deparse</a> has been upgraded from version 1.40 to 1.48.</p>
+
+<p>It includes many bug fixes, and in particular, it now deparses variable attributes correctly:</p>
+
+<pre><code>    my $x :foo;  # used to deparse as
+                 # &#39;attributes&#39;-&gt;import(&#39;main&#39;, \$x, &#39;foo&#39;), my $x;</code></pre>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/base.html">base</a> has been upgraded from version 2.25 to 2.27.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/bignum.html">bignum</a> has been upgraded from version 0.47 to 0.49.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/blib.html">blib</a> has been upgraded from version 1.06 to 1.07.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/bytes.html">bytes</a> has been upgraded from version 1.05 to 1.06.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Carp.html">Carp</a> has been upgraded from version 1.42 to 1.50.</p>
+
+<p>If a package on the call stack contains a constant named <code>ISA</code>, Carp no longer throws a &quot;Not a GLOB reference&quot; error.</p>
+
+<p><a href="file:/c|/perl/html/lib/Carp.html">Carp</a>, when generating stack traces, now attempts to work around longstanding bugs resulting from Perl&#39;s non-reference-counted stack. <a href="https://rt.perl.org/Ticket/Display.html?id=52610">[perl #52610]</a></p>
+
+<p>Carp has been modified to avoid assuming that objects cannot be overloaded without the <a href="file:/c|/perl/html/lib/overload.html">overload</a> module loaded (this can happen with objects created by XS modules). Previously, infinite recursion would result if an XS-defined overload method itself called Carp. <a href="https://rt.perl.org/Ticket/Display.html?id=132828">[perl #132828]</a></p>
+
+<p>Carp now avoids using <code>overload::StrVal</code>, partly because older versions of <a href="file:/c|/perl/html/lib/overload.html">overload</a> (included with perl 5.14 and earlier) load <a href="file:/c|/perl/html/lib/Scalar/Util.html">Scalar::Util</a> at run time, which will fail if Carp has been invoked after a syntax error.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/charnames.html">charnames</a> has been upgraded from version 1.44 to 1.45.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Compress/Raw/Zlib.html">Compress::Raw::Zlib</a> has been upgraded from version 2.074 to 2.076.</p>
+
+<p>This addresses a security vulnerability in older versions of the &#39;zlib&#39; library (which is bundled with Compress-Raw-Zlib).</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Config/Extensions.html">Config::Extensions</a> has been upgraded from version 0.01 to 0.02.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Config/Perl/V.html">Config::Perl::V</a> has been upgraded from version 0.28 to 0.29.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/CPAN.html">CPAN</a> has been upgraded from version 2.18 to 2.20.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Data/Dumper.html">Data::Dumper</a> has been upgraded from version 2.167 to 2.170.</p>
+
+<p>Quoting of glob names now obeys the Useqq option <a href="https://rt.perl.org/Ticket/Display.html?id=119831">[perl #119831]</a>.</p>
+
+<p>Attempts to set an option to <code>undef</code> through a combined getter/setter method are no longer mistaken for getter calls <a href="https://rt.perl.org/Ticket/Display.html?id=113090">[perl #113090]</a>.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Devel/Peek.html">Devel::Peek</a> has been upgraded from version 1.26 to 1.27.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Devel/PPPort.html">Devel::PPPort</a> has been upgraded from version 3.35 to 3.40.</p>
+
+<p><a href="file:/c|/perl/html/lib/Devel/PPPort.html">Devel::PPPort</a> has moved from cpan-first to perl-first maintenance</p>
+
+<p>Primary responsibility for the code in Devel::PPPort has moved into core perl. In a practical sense there should be no change except that hopefully it will stay more up to date with changes made to symbols in perl, rather than needing to be updated after the fact.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Digest/SHA.html">Digest::SHA</a> has been upgraded from version 5.96 to 6.01.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/DirHandle.html">DirHandle</a> has been upgraded from version 1.04 to 1.05.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/DynaLoader.html">DynaLoader</a> has been upgraded from version 1.42 to 1.45.</p>
+
+<p>Its documentation now shows the use of <code>__PACKAGE__</code> and direct object syntax <a href="https://rt.perl.org/Ticket/Display.html?id=132247">[perl #132247]</a>.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Encode.html">Encode</a> has been upgraded from version 2.88 to 2.97.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/encoding.html">encoding</a> has been upgraded from version 2.19 to 2.22.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Errno.html">Errno</a> has been upgraded from version 1.28 to 1.29.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/experimental.html">experimental</a> has been upgraded from version 0.016 to 0.019.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Exporter.html">Exporter</a> has been upgraded from version 5.72 to 5.73.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/CBuilder.html">ExtUtils::CBuilder</a> has been upgraded from version 0.280225 to 0.280230.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/Constant.html">ExtUtils::Constant</a> has been upgraded from version 0.23 to 0.25.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/Embed.html">ExtUtils::Embed</a> has been upgraded from version 1.34 to 1.35.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/Install.html">ExtUtils::Install</a> has been upgraded from version 2.04 to 2.14.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/MakeMaker.html">ExtUtils::MakeMaker</a> has been upgraded from version 7.24 to 7.34.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/Miniperl.html">ExtUtils::Miniperl</a> has been upgraded from version 1.06 to 1.08.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/ParseXS.html">ExtUtils::ParseXS</a> has been upgraded from version 3.34 to 3.39.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/Typemaps.html">ExtUtils::Typemaps</a> has been upgraded from version 3.34 to 3.38.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/ExtUtils/XSSymSet.html">ExtUtils::XSSymSet</a> has been upgraded from version 1.3 to 1.4.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/feature.html">feature</a> has been upgraded from version 1.47 to 1.52.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/fields.html">fields</a> has been upgraded from version 2.23 to 2.24.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/Copy.html">File::Copy</a> has been upgraded from version 2.32 to 2.33.</p>
+
+<p>It will now use the sub-second precision variant of utime() supplied by <a href="file:/c|/perl/html/lib/Time/HiRes.html">Time::HiRes</a> where available. <a href="https://rt.perl.org/Ticket/Display.html?id=132401">[perl #132401]</a>.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/Fetch.html">File::Fetch</a> has been upgraded from version 0.52 to 0.56.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/Glob.html">File::Glob</a> has been upgraded from version 1.28 to 1.31.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/Path.html">File::Path</a> has been upgraded from version 2.12_01 to 2.15.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/Spec.html">File::Spec</a> and <a href="file:/c|/perl/html/lib/Cwd.html">Cwd</a> have been upgraded from version 3.67 to 3.74.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/File/stat.html">File::stat</a> has been upgraded from version 1.07 to 1.08.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/FileCache.html">FileCache</a> has been upgraded from version 1.09 to 1.10.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Filter/Simple.html">Filter::Simple</a> has been upgraded from version 0.93 to 0.95.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Filter/Util/Call.html">Filter::Util::Call</a> has been upgraded from version 1.55 to 1.58.</p>
+
+</li>
+<li><p><a>GDBM_File</a> has been upgraded from version 1.15 to 1.17.</p>
+
+<p>Its documentation now explains that <code>each</code> and <code>delete</code> don&#39;t mix in hashes tied to this module <a href="https://rt.perl.org/Ticket/Display.html?id=117449">[perl #117449]</a>.</p>
+
+<p>It will now retry opening with an acceptable block size if asking gdbm to default the block size failed <a href="https://rt.perl.org/Ticket/Display.html?id=119623">[perl #119623]</a>.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Getopt/Long.html">Getopt::Long</a> has been upgraded from version 2.49 to 2.5.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Hash/Util/FieldHash.html">Hash::Util::FieldHash</a> has been upgraded from version 1.19 to 1.20.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/I18N/Langinfo.html">I18N::Langinfo</a> has been upgraded from version 0.13 to 0.17.</p>
+
+<p>This module is now available on all platforms, emulating the system <a href="http://man.he.net/man3/nl_langinfo">nl_langinfo(3)</a> on systems that lack it. Some caveats apply, as <a href="file:/c|/perl/html/lib/I18N/Langinfo.html">detailed in its documentation</a>, the most severe being that, except for MS Windows, the <code>CODESET</code> item is not implemented on those systems, always returning <code>&quot;&quot;</code>.</p>
+
+<p>It now sets the UTF-8 flag in its returned scalar if the string contains legal non-ASCII UTF-8, and the locale is UTF-8 <a href="https://rt.perl.org/Ticket/Display.html?id=127288">[perl #127288]</a>.</p>
+
+<p>This update also fixes a bug in which the underlying locale was ignored for the <code>RADIXCHAR</code> (always was returned as a dot) and the <code>THOUSEP</code> (always empty). Now the locale-appropriate values are returned.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/I18N/LangTags.html">I18N::LangTags</a> has been upgraded from version 0.42 to 0.43.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/if.html">if</a> has been upgraded from version 0.0606 to 0.0608.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/IO.html">IO</a> has been upgraded from version 1.38 to 1.39.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/IO/Socket/IP.html">IO::Socket::IP</a> has been upgraded from version 0.38 to 0.39.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/IPC/Cmd.html">IPC::Cmd</a> has been upgraded from version 0.96 to 1.00.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/JSON/PP.html">JSON::PP</a> has been upgraded from version 2.27400_02 to 2.97001.</p>
+
+</li>
+<li><p>The <code>libnet</code> distribution has been upgraded from version 3.10 to 3.11.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/List/Util.html">List::Util</a> has been upgraded from version 1.46_02 to 1.49.</p>
+
+</li>
+<li><p><a>Locale::Codes</a> has been upgraded from version 3.42 to 3.56.</p>
+
+<p><b>NOTE</b>: <a>Locale::Codes</a> scheduled to be removed from core in Perl 5.30.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Locale/Maketext.html">Locale::Maketext</a> has been upgraded from version 1.28 to 1.29.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Math/BigInt.html">Math::BigInt</a> has been upgraded from version 1.999806 to 1.999811.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Math/BigInt/FastCalc.html">Math::BigInt::FastCalc</a> has been upgraded from version 0.5005 to 0.5006.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Math/BigRat.html">Math::BigRat</a> has been upgraded from version 0.2611 to 0.2613.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Module/CoreList.html">Module::CoreList</a> has been upgraded from version 5.20170530 to 5.20180622.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/mro.html">mro</a> has been upgraded from version 1.20 to 1.22.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Net/Ping.html">Net::Ping</a> has been upgraded from version 2.55 to 2.62.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/NEXT.html">NEXT</a> has been upgraded from version 0.67 to 0.67_01.</p>
+
+</li>
+<li><p><a>ODBM_File</a> has been upgraded from version 1.14 to 1.15.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Opcode.html">Opcode</a> has been upgraded from version 1.39 to 1.43.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/overload.html">overload</a> has been upgraded from version 1.28 to 1.30.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/PerlIO/encoding.html">PerlIO::encoding</a> has been upgraded from version 0.25 to 0.26.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/PerlIO/scalar.html">PerlIO::scalar</a> has been upgraded from version 0.26 to 0.29.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/PerlIO/via.html">PerlIO::via</a> has been upgraded from version 0.16 to 0.17.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Pod/Functions.html">Pod::Functions</a> has been upgraded from version 1.11 to 1.13.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Pod/Html.html">Pod::Html</a> has been upgraded from version 1.2202 to 1.24.</p>
+
+<p>A title for the HTML document will now be automatically generated by default from a &quot;NAME&quot; section in the POD document, as it used to be before the module was rewritten to use <a href="file:/c|/perl/html/lib/Pod/Simple/XHTML.html">Pod::Simple::XHTML</a> to do the core of its job <a href="https://rt.perl.org/Ticket/Display.html?id=110520">[perl #110520]</a>.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Pod/Perldoc.html">Pod::Perldoc</a> has been upgraded from version 3.28 to 3.2801.</p>
+
+</li>
+<li><p>The <code>podlators</code> distribution has been upgraded from version 4.09 to 4.10.</p>
+
+<p>Man page references and function names now follow the Linux man page formatting standards, instead of the Solaris standard.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/POSIX.html">POSIX</a> has been upgraded from version 1.76 to 1.84.</p>
+
+<p>Some more cautions were added about using locale-specific functions in threaded applications.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/re.html">re</a> has been upgraded from version 0.34 to 0.36.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Scalar/Util.html">Scalar::Util</a> has been upgraded from version 1.46_02 to 1.50.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/SelfLoader.html">SelfLoader</a> has been upgraded from version 1.23 to 1.25.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Socket.html">Socket</a> has been upgraded from version 2.020_03 to 2.027.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/sort.html">sort</a> has been upgraded from version 2.02 to 2.04.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Storable.html">Storable</a> has been upgraded from version 2.62 to 3.08.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Sub/Util.html">Sub::Util</a> has been upgraded from version 1.48 to 1.49.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/subs.html">subs</a> has been upgraded from version 1.02 to 1.03.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Sys/Hostname.html">Sys::Hostname</a> has been upgraded from version 1.20 to 1.22.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Term/ReadLine.html">Term::ReadLine</a> has been upgraded from version 1.16 to 1.17.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Test.html">Test</a> has been upgraded from version 1.30 to 1.31.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Test/Harness.html">Test::Harness</a> has been upgraded from version 3.38 to 3.42.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Test/Simple.html">Test::Simple</a> has been upgraded from version 1.302073 to 1.302133.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/threads.html">threads</a> has been upgraded from version 2.15 to 2.22.</p>
+
+<p>The documentation now better describes the problems that arise when returning values from threads, and no longer warns about creating threads in <code>BEGIN</code> blocks. <a href="https://rt.perl.org/Ticket/Display.html?id=96538">[perl #96538]</a></p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/threads/shared.html">threads::shared</a> has been upgraded from version 1.56 to 1.58.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Tie/Array.html">Tie::Array</a> has been upgraded from version 1.06 to 1.07.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Tie/StdHandle.html">Tie::StdHandle</a> has been upgraded from version 4.4 to 4.5.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Time/gmtime.html">Time::gmtime</a> has been upgraded from version 1.03 to 1.04.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Time/HiRes.html">Time::HiRes</a> has been upgraded from version 1.9741 to 1.9759.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Time/localtime.html">Time::localtime</a> has been upgraded from version 1.02 to 1.03.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Time/Piece.html">Time::Piece</a> has been upgraded from version 1.31 to 1.3204.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Unicode/Collate.html">Unicode::Collate</a> has been upgraded from version 1.19 to 1.25.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Unicode/Normalize.html">Unicode::Normalize</a> has been upgraded from version 1.25 to 1.26.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/Unicode/UCD.html">Unicode::UCD</a> has been upgraded from version 0.68 to 0.70.</p>
+
+<p>The function <code>num</code> now accepts an optional parameter to help in diagnosing error returns.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/User/grent.html">User::grent</a> has been upgraded from version 1.01 to 1.02.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/User/pwent.html">User::pwent</a> has been upgraded from version 1.00 to 1.01.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/utf8.html">utf8</a> has been upgraded from version 1.19 to 1.21.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/vars.html">vars</a> has been upgraded from version 1.03 to 1.04.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/version.html">version</a> has been upgraded from version 0.9917 to 0.9923.</p>
+
+</li>
+<li><p><a>VMS::DCLsym</a> has been upgraded from version 1.08 to 1.09.</p>
+
+</li>
+<li><p><a>VMS::Stdio</a> has been upgraded from version 2.41 to 2.44.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/warnings.html">warnings</a> has been upgraded from version 1.37 to 1.42.</p>
+
+<p>It now includes new functions with names ending in <code>_at_level</code>, allowing callers to specify the exact call frame. <a href="https://rt.perl.org/Ticket/Display.html?id=132468">[perl #132468]</a></p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/XS/Typemap.html">XS::Typemap</a> has been upgraded from version 0.15 to 0.16.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/lib/XSLoader.html">XSLoader</a> has been upgraded from version 0.27 to 0.30.</p>
+
+<p>Its documentation now shows the use of <code>__PACKAGE__</code>, and direct object syntax for example <code>DynaLoader</code> usage <a href="https://rt.perl.org/Ticket/Display.html?id=132247">[perl #132247]</a>.</p>
+
+<p>Platforms that use <code>mod2fname</code> to edit the names of loadable libraries now look for bootstrap (.bs) files under the correct, non-edited name.</p>
+
+</li>
+</ul>
+
+<h2 id="Removed-Modules-and-Pragmata">Removed Modules and Pragmata</h2>
+
+<ul>
+
+<li><p>The <code>VMS::stdio</code> compatibility shim has been removed.</p>
+
+</li>
+</ul>
+
+<h1 id="Documentation">Documentation</h1>
+
+<h2 id="Changes-to-Existing-Documentation">Changes to Existing Documentation</h2>
+
+<p>We have attempted to update the documentation to reflect the changes listed in this document. If you find any we have missed, send email to <a href="mailto:perlbug@perl.org">perlbug@perl.org</a>.</p>
+
+<p>Additionally, the following selected changes have been made:</p>
+
+<h3 id="perlapi"><a href="file:/c|/perl/html/pod/perlapi.html">perlapi</a></h3>
+
+<ul>
+
+<li><p>The API functions <code>perl_parse()</code>, <code>perl_run()</code>, and <code>perl_destruct()</code> are now documented comprehensively, where previously the only documentation was a reference to the <a href="file:/c|/perl/html/pod/perlembed.html">perlembed</a> tutorial.</p>
+
+</li>
+<li><p>The documentation of <code>newGIVENOP()</code> has been belatedly updated to account for the removal of lexical <code>$_</code>.</p>
+
+</li>
+<li><p>The API functions <code>newCONSTSUB()</code> and <code>newCONSTSUB_flags()</code> are documented much more comprehensively than before.</p>
+
+</li>
+</ul>
+
+<h3 id="perldata"><a href="file:/c|/perl/html/pod/perldata.html">perldata</a></h3>
+
+<ul>
+
+<li><p>The section &quot;Truth and Falsehood&quot; in <a href="file:/c|/perl/html/pod/perlsyn.html">perlsyn</a> has been moved into <a href="file:/c|/perl/html/pod/perldata.html">perldata</a>.</p>
+
+</li>
+</ul>
+
+<h3 id="perldebguts"><a href="file:/c|/perl/html/pod/perldebguts.html">perldebguts</a></h3>
+
+<ul>
+
+<li><p>The description of the conditions under which <code>DB::sub()</code> will be called has been clarified. <a href="https://rt.perl.org/Ticket/Display.html?id=131672">[perl #131672]</a></p>
+
+</li>
+</ul>
+
+<h3 id="perldiag"><a href="file:/c|/perl/html/pod/perldiag.html">perldiag</a></h3>
+
+<ul>
+
+<li><p><a href="file:/c|/perl/html/pod/perldiag.html#Variable-length-lookbehind-not-implemented-in-regex-m-s">&quot;Variable length lookbehind not implemented in regex m/%s/&quot; in perldiag</a></p>
+
+<p>This now gives more ideas as to workarounds to the issue that was introduced in Perl 5.18 (but not documented explicitly in its perldelta) for the fact that some Unicode <code>/i</code> rules cause a few sequences such as</p>
+
+<pre><code> (?&lt;!st)</code></pre>
+
+<p>to be considered variable length, and hence disallowed.</p>
+
+</li>
+<li><p>&quot;Use of state $_ is experimental&quot; in <a href="file:/c|/perl/html/pod/perldiag.html">perldiag</a></p>
+
+<p>This entry has been removed, as the experimental support of this construct was removed in perl 5.24.0.</p>
+
+</li>
+<li><p>The diagnostic <code>Initialization of state variables in list context currently forbidden</code> has changed to <code>Initialization of state variables in list currently forbidden</code>, because list-context initialization of single aggregate state variables is now permitted.</p>
+
+</li>
+</ul>
+
+<h3 id="perlembed"><a href="file:/c|/perl/html/pod/perlembed.html">perlembed</a></h3>
+
+<ul>
+
+<li><p>The examples in <a href="file:/c|/perl/html/pod/perlembed.html">perlembed</a> have been made more portable in the way they exit, and the example that gets an exit code from the embedded Perl interpreter now gets it from the right place. The examples that pass a constructed argv to Perl now show the mandatory null <code>argv[argc]</code>.</p>
+
+</li>
+<li><p>An example in <a href="file:/c|/perl/html/pod/perlembed.html">perlembed</a> used the string value of <code>ERRSV</code> as a format string when calling croak(). If that string contains format codes such as <code>%s</code> this could crash the program.</p>
+
+<p>This has been changed to a call to croak_sv().</p>
+
+<p>An alternative could have been to supply a trivial format string:</p>
+
+<pre><code>  croak(&quot;%s&quot;, SvPV_nolen(ERRSV));</code></pre>
+
+<p>or as a special case for <code>ERRSV</code> simply:</p>
+
+<pre><code>  croak(NULL);</code></pre>
+
+</li>
+</ul>
+
+<h3 id="perlfunc"><a href="file:/c|/perl/html/pod/perlfunc.html">perlfunc</a></h3>
+
+<ul>
+
+<li><p>There is now a note that warnings generated by built-in functions are documented in <a href="file:/c|/perl/html/pod/perldiag.html">perldiag</a> and <a href="file:/c|/perl/html/lib/warnings.html">warnings</a>. <a href="https://rt.perl.org/Ticket/Display.html?id=116080">[perl #116080]</a></p>
+
+</li>
+<li><p>The documentation for the <code>exists</code> operator no longer says that autovivification behaviour &quot;may be fixed in a future release&quot;. We&#39;ve determined that we&#39;re not going to change the default behaviour. <a href="https://rt.perl.org/Ticket/Display.html?id=127712">[perl #127712]</a></p>
+
+</li>
+<li><p>A couple of small details in the documentation for the <code>bless</code> operator have been clarified. <a href="https://rt.perl.org/Ticket/Display.html?id=124428">[perl #124428]</a></p>
+
+</li>
+<li><p>The description of <code>@INC</code> hooks in the documentation for <code>require</code> has been corrected to say that filter subroutines receive a useless first argument. <a href="https://rt.perl.org/Ticket/Display.html?id=115754">[perl #115754]</a></p>
+
+</li>
+<li><p>The documentation of <code>ref</code> has been rewritten for clarity.</p>
+
+</li>
+<li><p>The documentation of <code>use</code> now explains what syntactically qualifies as a version number for its module version checking feature.</p>
+
+</li>
+<li><p>The documentation of <code>warn</code> has been updated to reflect that since Perl 5.14 it has treated complex exception objects in a manner equivalent to <code>die</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=121372">[perl #121372]</a></p>
+
+</li>
+<li><p>The documentation of <code>die</code> and <code>warn</code> has been revised for clarity.</p>
+
+</li>
+<li><p>The documentation of <code>each</code> has been improved, with a slightly more explicit description of the sharing of iterator state, and with caveats regarding the fragility of while-each loops. <a href="https://rt.perl.org/Ticket/Display.html?id=132644">[perl #132644]</a></p>
+
+</li>
+<li><p>Clarification to <code>require</code> was added to explain the differences between</p>
+
+<pre><code>    require Foo::Bar;
+    require &quot;Foo/Bar.pm&quot;;</code></pre>
+
+</li>
+</ul>
+
+<h3 id="perlgit"><a href="file:/c|/perl/html/pod/perlgit.html">perlgit</a></h3>
+
+<ul>
+
+<li><p>The precise rules for identifying <code>smoke-me</code> branches are now stated.</p>
+
+</li>
+</ul>
+
+<h3 id="perlguts"><a href="file:/c|/perl/html/pod/perlguts.html">perlguts</a></h3>
+
+<ul>
+
+<li><p>The section on reference counting in <a href="file:/c|/perl/html/pod/perlguts.html">perlguts</a> has been heavily revised, to describe references in the way a programmer needs to think about them rather than in terms of the physical data structures.</p>
+
+</li>
+<li><p>Improve documentation related to UTF-8 multibytes.</p>
+
+</li>
+</ul>
+
+<h3 id="perlintern"><a href="file:/c|/perl/html/pod/perlintern.html">perlintern</a></h3>
+
+<ul>
+
+<li><p>The internal functions <code>newXS_len_flags()</code> and <code>newATTRSUB_x()</code> are now documented.</p>
+
+</li>
+</ul>
+
+<h3 id="perlobj"><a href="file:/c|/perl/html/pod/perlobj.html">perlobj</a></h3>
+
+<ul>
+
+<li><p>The documentation about <code>DESTROY</code> methods has been corrected, updated, and revised, especially in regard to how they interact with exceptions. <a href="https://rt.perl.org/Ticket/Display.html?id=122753">[perl #122753]</a></p>
+
+</li>
+</ul>
+
+<h3 id="perlop"><a href="file:/c|/perl/html/pod/perlop.html">perlop</a></h3>
+
+<ul>
+
+<li><p>The description of the <code>x</code> operator in <a href="file:/c|/perl/html/pod/perlop.html">perlop</a> has been clarified. <a href="https://rt.perl.org/Ticket/Display.html?id=132460">[perl #132460]</a></p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/pod/perlop.html">perlop</a> has been updated to note that <code>qw</code>&#39;s whitespace rules differ from that of <code>split</code>&#39;s in that only ASCII whitespace is used.</p>
+
+</li>
+<li><p>The general explanation of operator precedence and associativity has been corrected and clarified. <a href="https://rt.perl.org/Ticket/Display.html?id=127391">[perl #127391]</a></p>
+
+</li>
+<li><p>The documentation for the <code>\</code> referencing operator now explains the unusual context that it supplies to its operand. <a href="https://rt.perl.org/Ticket/Display.html?id=131061">[perl #131061]</a></p>
+
+</li>
+</ul>
+
+<h3 id="perlrequick"><a href="file:/c|/perl/html/pod/perlrequick.html">perlrequick</a></h3>
+
+<ul>
+
+<li><p>Clarifications on metacharacters and character classes</p>
+
+</li>
+</ul>
+
+<h3 id="perlretut"><a href="file:/c|/perl/html/pod/perlretut.html">perlretut</a></h3>
+
+<ul>
+
+<li><p>Clarify metacharacters.</p>
+
+</li>
+</ul>
+
+<h3 id="perlrun"><a href="file:/c|/perl/html/pod/perlrun.html">perlrun</a></h3>
+
+<ul>
+
+<li><p>Clarify the differences between <b>-M</b> and <b>-m</b>. <a href="https://rt.perl.org/Ticket/Display.html?id=131518">[perl #131518]</a></p>
+
+</li>
+</ul>
+
+<h3 id="perlsec"><a href="file:/c|/perl/html/pod/perlsec.html">perlsec</a></h3>
+
+<ul>
+
+<li><p>The documentation about set-id scripts has been updated and revised. <a href="https://rt.perl.org/Ticket/Display.html?id=74142">[perl #74142]</a></p>
+
+</li>
+<li><p>A section about using <code>sudo</code> to run Perl scripts has been added.</p>
+
+</li>
+</ul>
+
+<h3 id="perlsyn"><a href="file:/c|/perl/html/pod/perlsyn.html">perlsyn</a></h3>
+
+<ul>
+
+<li><p>The section &quot;Truth and Falsehood&quot; in <a href="file:/c|/perl/html/pod/perlsyn.html">perlsyn</a> has been removed from that document, where it didn&#39;t belong, and merged into the existing paragraph on the same topic in <a href="file:/c|/perl/html/pod/perldata.html">perldata</a>.</p>
+
+</li>
+<li><p>The means to disambiguate between code blocks and hash constructors, already documented in <a href="file:/c|/perl/html/pod/perlref.html">perlref</a>, are now documented in <a href="file:/c|/perl/html/pod/perlsyn.html">perlsyn</a> too. <a href="https://rt.perl.org/Ticket/Display.html?id=130958">[perl #130958]</a></p>
+
+</li>
+</ul>
+
+<h3 id="perluniprops"><a href="file:/c|/perl/html/pod/perluniprops.html">perluniprops</a></h3>
+
+<ul>
+
+<li><p><a href="file:/c|/perl/html/pod/perluniprops.html">perluniprops</a> has been updated to note that <code>\p{Word}</code> now includes code points matching the <code>\p{Join_Control}</code> property. The change to the property was made in Perl 5.18, but not documented until now. There are currently only two code points that match this property U+200C (ZERO WIDTH NON-JOINER) and U+200D (ZERO WIDTH JOINER).</p>
+
+</li>
+<li><p>For each binary table or property, the documentation now includes which characters in the range <code>\x00-\xFF</code> it matches, as well as a list of the first few ranges of code points matched above that.</p>
+
+</li>
+</ul>
+
+<h3 id="perlvar"><a href="file:/c|/perl/html/pod/perlvar.html">perlvar</a></h3>
+
+<ul>
+
+<li><p>The entry for <code>$+</code> in perlvar has been expanded upon to describe handling of multiply-named capturing groups.</p>
+
+</li>
+</ul>
+
+<h3 id="perlfunc-perlop-perlsyn"><a href="file:/c|/perl/html/pod/perlfunc.html">perlfunc</a>, <a href="file:/c|/perl/html/pod/perlop.html">perlop</a>, <a href="file:/c|/perl/html/pod/perlsyn.html">perlsyn</a></h3>
+
+<ul>
+
+<li><p>In various places, improve the documentation of the special cases in the condition expression of a while loop, such as implicit <code>defined</code> and assignment to <code>$_</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=132644">[perl #132644]</a></p>
+
+</li>
+</ul>
+
+<h1 id="Diagnostics">Diagnostics</h1>
+
+<p>The following additions or changes have been made to diagnostic output, including warnings and fatal error messages. For the complete list of diagnostic messages, see <a href="file:/c|/perl/html/pod/perldiag.html">perldiag</a>.</p>
+
+<h2 id="New-Diagnostics">New Diagnostics</h2>
+
+<h3 id="New-Errors">New Errors</h3>
+
+<ul>
+
+<li><p><a href="file:/c|/perl/html/pod/perldiag.html#Can-t-goto-into-a-given-block">Can&#39;t &quot;goto&quot; into a &quot;given&quot; block</a></p>
+
+<p>(F) A &quot;goto&quot; statement was executed to jump into the middle of a <code>given</code> block. You can&#39;t get there from here. See <a href="file:/c|/perl/html/pod/perlfunc.html#goto">&quot;goto&quot; in perlfunc</a>.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/pod/perldiag.html#Can-t-goto-into-a-binary-or-list-expression">Can&#39;t &quot;goto&quot; into a binary or list expression</a></p>
+
+<p>Use of <code>goto</code> to jump into the parameter of a binary or list operator has been prohibited, to prevent crashes and stack corruption. <a href="https://rt.perl.org/Ticket/Display.html?id=130936">[perl #130936]</a></p>
+
+<p>You may only enter the <i>first</i> argument of an operator that takes a fixed number of arguments, since this is a case that will not cause stack corruption. <a href="https://rt.perl.org/Ticket/Display.html?id=132854">[perl #132854]</a></p>
+
+</li>
+</ul>
+
+<h3 id="New-Warnings">New Warnings</h3>
+
+<ul>
+
+<li><p><a href="file:/c|/perl/html/pod/perldiag.html#Old-package-separator-used-in-string">Old package separator used in string</a></p>
+
+<p>(W syntax) You used the old package separator, &quot;&#39;&quot;, in a variable named inside a double-quoted string; e.g., <code>&quot;In $name&#39;s house&quot;</code>. This is equivalent to <code>&quot;In $name::s house&quot;</code>. If you meant the former, put a backslash before the apostrophe (<code>&quot;In $name\&#39;s house&quot;</code>).</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/pod/perldiag.html#Locale-s-contains-at-least-the-following-characters-which-have-unexpected-meanings:-s-The-Perl-program-will-use-the-expected-meanings">&quot;Locale &#39;%s&#39; contains (at least) the following characters which have unexpected meanings: %s The Perl program will use the expected meanings&quot; in perldiag</a></p>
+
+</li>
+</ul>
+
+<h2 id="Changes-to-Existing-Diagnostics">Changes to Existing Diagnostics</h2>
+
+<ul>
+
+<li><p>A false-positive warning that was issued when using a numerically-quantified sub-pattern in a recursive regex has been silenced. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131868">[perl #131868]</a></p>
+
+</li>
+<li><p>The warning about useless use of a concatenation operator in void context is now generated for expressions with multiple concatenations, such as <code>$a.$b.$c</code>, which used to mistakenly not warn. <a href="https://rt.perl.org/Ticket/Display.html?id=6997">[perl #6997]</a></p>
+
+</li>
+<li><p>Warnings that a variable or subroutine &quot;masks earlier declaration in same ...&quot;, or that an <code>our</code> variable has been redeclared, have been moved to a new warnings category &quot;shadow&quot;. Previously they were in category &quot;misc&quot;.</p>
+
+</li>
+<li><p>The deprecation warning from <code>Sys::Hostname::hostname()</code> saying that it doesn&#39;t accept arguments now states the Perl version in which the warning will be upgraded to an error. <a href="https://rt.perl.org/Ticket/Display.html?id=124349">[perl #124349]</a></p>
+
+</li>
+<li><p>The <a href="file:/c|/perl/html/pod/perldiag.html">perldiag</a> entry for the error regarding a set-id script has been expanded to make clear that the error is reporting a specific security vulnerability, and to advise how to fix it.</p>
+
+</li>
+<li><p>The <code>Unable to flush stdout</code> error message was missing a trailing newline. [debian #875361]</p>
+
+</li>
+</ul>
+
+<h1 id="Utility-Changes">Utility Changes</h1>
+
+<h2 id="perlbug"><a href="file:/c|/perl/html/utils/perlbug.html">perlbug</a></h2>
+
+<ul>
+
+<li><p><code>--help</code> and <code>--version</code> options have been added.</p>
+
+</li>
+</ul>
+
+<h1 id="Configuration-and-Compilation">Configuration and Compilation</h1>
+
+<ul>
+
+<li><p>C89 requirement</p>
+
+<p>Perl has been documented as requiring a C89 compiler to build since October 1998. A variety of simplifications have now been made to Perl&#39;s internals to rely on the features specified by the C89 standard. We believe that this internal change hasn&#39;t altered the set of platforms that Perl builds on, but please report a bug if Perl now has new problems building on your platform.</p>
+
+</li>
+<li><p>On GCC, <code>-Werror=pointer-arith</code> is now enabled by default, disallowing arithmetic on void and function pointers.</p>
+
+</li>
+<li><p>Where an HTML version of the documentation is installed, the HTML documents now use relative links to refer to each other. Links from the index page of <a href="file:/c|/perl/html/pod/perlipc.html">perlipc</a> to the individual section documents are now correct. <a href="https://rt.perl.org/Ticket/Display.html?id=110056">[perl #110056]</a></p>
+
+</li>
+<li><p><i>lib/unicore/mktables</i> now correctly canonicalizes the names of the dependencies stored in the files it generates.</p>
+
+<p><i>regen/mk_invlists.pl</i>, unlike the other <i>regen/*.pl</i> scripts, used <code>$0</code> to name itself in the dependencies stored in the files it generates. It now uses a literal so that the path stored in the generated files doesn&#39;t depend on how <i>regen/mk_invlists.pl</i> is invoked.</p>
+
+<p>This lack of canonical names could cause test failures in <i>t/porting/regen.t</i>. <a href="https://rt.perl.org/Ticket/Display.html?id=132925">[perl #132925]</a></p>
+
+</li>
+<li><p>New probes</p>
+
+<dl>
+
+<dt id="HAS_BUILTIN_ADD_OVERFLOW">HAS_BUILTIN_ADD_OVERFLOW</dt>
+<dd>
+
+</dd>
+<dt id="HAS_BUILTIN_MUL_OVERFLOW">HAS_BUILTIN_MUL_OVERFLOW</dt>
+<dd>
+
+</dd>
+<dt id="HAS_BUILTIN_SUB_OVERFLOW">HAS_BUILTIN_SUB_OVERFLOW</dt>
+<dd>
+
+</dd>
+<dt id="HAS_THREAD_SAFE_NL_LANGINFO_L">HAS_THREAD_SAFE_NL_LANGINFO_L</dt>
+<dd>
+
+</dd>
+<dt id="HAS_LOCALECONV_L">HAS_LOCALECONV_L</dt>
+<dd>
+
+</dd>
+<dt id="HAS_MBRLEN">HAS_MBRLEN</dt>
+<dd>
+
+</dd>
+<dt id="HAS_MBRTOWC">HAS_MBRTOWC</dt>
+<dd>
+
+</dd>
+<dt id="HAS_MEMRCHR">HAS_MEMRCHR</dt>
+<dd>
+
+</dd>
+<dt id="HAS_NANOSLEEP">HAS_NANOSLEEP</dt>
+<dd>
+
+</dd>
+<dt id="HAS_STRNLEN">HAS_STRNLEN</dt>
+<dd>
+
+</dd>
+<dt id="HAS_STRTOLD_L">HAS_STRTOLD_L</dt>
+<dd>
+
+</dd>
+<dt id="I_WCHAR">I_WCHAR</dt>
+<dd>
+
+</dd>
+</dl>
+
+</li>
+</ul>
+
+<h1 id="Testing">Testing</h1>
+
+<ul>
+
+<li><p>Testing of the XS-APItest directory is now done in parallel, where applicable.</p>
+
+</li>
+<li><p>Perl now includes a default <i>.travis.yml</i> file for Travis CI testing on github mirrors. <a href="https://rt.perl.org/Ticket/Display.html?id=123981">[perl #123981]</a></p>
+
+</li>
+<li><p>The watchdog timer count in <i>re/pat_psycho.t</i> can now be overridden.</p>
+
+<p>This test can take a long time to run, so there is a timer to keep this in check (currently, 5 minutes). This commit adds checking the environment variable <code>PERL_TEST_TIME_OUT_FACTOR</code>; if set, the time out setting is multiplied by its value.</p>
+
+</li>
+<li><p><i>harness</i> no longer waits for 30 seconds when running <i>t/io/openpid.t</i>. <a href="https://rt.perl.org/Ticket/Display.html?id=121028">[perl #121028]</a> <a href="https://rt.perl.org/Ticket/Display.html?id=132867">[perl #132867]</a></p>
+
+</li>
+</ul>
+
+<h1 id="Packaging">Packaging</h1>
+
+<p>For the past few years we have released perl using three different archive formats: bzip (<code>.bz2</code>), LZMA2 (<code>.xz</code>) and gzip (<code>.gz</code>). Since xz compresses better and decompresses faster, and gzip is more compatible and uses less memory, we have dropped the <code>.bz2</code> archive format with this release. (If this poses a problem, do let us know; see <a href="#Reporting-Bugs">&quot;Reporting Bugs&quot;</a>, below.)</p>
+
+<h1 id="Platform-Support">Platform Support</h1>
+
+<h2 id="Discontinued-Platforms">Discontinued Platforms</h2>
+
+<dl>
+
+<dt id="PowerUX-Power-MAX-OS">PowerUX / Power MAX OS</dt>
+<dd>
+
+<p>Compiler hints and other support for these apparently long-defunct platforms has been removed.</p>
+
+</dd>
+</dl>
+
+<h2 id="Platform-Specific-Notes">Platform-Specific Notes</h2>
+
+<dl>
+
+<dt id="CentOS">CentOS</dt>
+<dd>
+
+<p>Compilation on CentOS 5 is now fixed.</p>
+
+</dd>
+<dt id="Cygwin">Cygwin</dt>
+<dd>
+
+<p>A build with the quadmath library can now be done on Cygwin.</p>
+
+</dd>
+<dt id="Darwin">Darwin</dt>
+<dd>
+
+<p>Perl now correctly uses reentrant functions, like <code>asctime_r</code>, on versions of Darwin that have support for them.</p>
+
+</dd>
+<dt id="FreeBSD">FreeBSD</dt>
+<dd>
+
+<p>FreeBSD&#39;s <i>/usr/share/mk/sys.mk</i> specifies <code>-O2</code> for architectures other than ARM and MIPS. By default, perl is now compiled with the same optimization levels.</p>
+
+</dd>
+<dt id="VMS">VMS</dt>
+<dd>
+
+<p>Several fix-ups for <i>configure.com</i>, marking function VMS has (or doesn&#39;t have).</p>
+
+<p>CRTL features can now be set by embedders before invoking Perl by using the <code>decc$feature_set</code> and <code>decc$feature_set_value</code> functions. Previously any attempt to set features after image initialization were ignored.</p>
+
+</dd>
+<dt id="Windows">Windows</dt>
+<dd>
+
+<ul>
+
+<li><p>Support for compiling perl on Windows using Microsoft Visual Studio 2017 (containing Visual C++ 14.1) has been added.</p>
+
+</li>
+<li><p>Visual C++ compiler version detection has been improved to work on non-English language systems.</p>
+
+</li>
+<li><p>We now set <code>$Config{libpth}</code> correctly for 64-bit builds using Visual C++ versions earlier than 14.1.</p>
+
+</li>
+</ul>
+
+</dd>
+</dl>
+
+<h1 id="Internal-Changes">Internal Changes</h1>
+
+<ul>
+
+<li><p>A new optimisation phase has been added to the compiler, <code>optimize_optree()</code>, which does a top-down scan of a complete optree just before the peephole optimiser is run. This phase is not currently hookable.</p>
+
+</li>
+<li><p>An <code>OP_MULTICONCAT</code> op has been added. At <code>optimize_optree()</code> time, a chain of <code>OP_CONCAT</code> and <code>OP_CONST</code> ops, together optionally with an <code>OP_STRINGIFY</code> and/or <code>OP_SASSIGN</code>, are combined into a single <code>OP_MULTICONCAT</code> op. The op is of type <code>UNOP_AUX</code>, and the aux array contains the argument count, plus a pointer to a constant string and a set of segment lengths. For example with</p>
+
+<pre><code>    my $x = &quot;foo=$foo, bar=$bar\n&quot;;</code></pre>
+
+<p>the constant string would be <code>&quot;foo=, bar=\n&quot;</code> and the segment lengths would be (4,6,1). If the string contains characters such as <code>\x80</code>, whose representation changes under utf8, two sets of strings plus lengths are precomputed and stored.</p>
+
+</li>
+<li><p>Direct access to <a href="file:/c|/perl/html/pod/perlapi.html#PL_keyword_plugin"><code>PL_keyword_plugin</code></a> is not safe in the presence of multithreading. A new <a href="file:/c|/perl/html/pod/perlapi.html#wrap_keyword_plugin"><code>wrap_keyword_plugin</code></a> function has been added to allow XS modules to safely define custom keywords even when loaded from a thread, analogous to <a href="file:/c|/perl/html/pod/perlapi.html#PL_check"><code>PL_check</code></a> / <a href="file:/c|/perl/html/pod/perlapi.html#wrap_op_checker"><code>wrap_op_checker</code></a>.</p>
+
+</li>
+<li><p>The <code>PL_statbuf</code> interpreter variable has been removed.</p>
+
+</li>
+<li><p>The deprecated function <code>to_utf8_case()</code>, accessible from XS code, has been removed.</p>
+
+</li>
+<li><p>A new function <a href="file:/c|/perl/html/pod/perlapi.html#is_utf8_invariant_string_loc"><code>is_utf8_invariant_string_loc()</code></a> has been added that is like <a href="file:/c|/perl/html/pod/perlapi.html#is_utf8_invariant_string"><code>is_utf8_invariant_string()</code></a> but takes an extra pointer parameter into which is stored the location of the first variant character, if any are found.</p>
+
+</li>
+<li><p>A new function, <a href="file:/c|/perl/html/pod/perlapi.html#Perl_langinfo"><code>Perl_langinfo()</code></a> has been added. It is an (almost) drop-in replacement for the system <code>nl_langinfo(3)</code>, but works on platforms that lack that; as well as being more thread-safe, and hiding some gotchas with locale handling from the caller. Code that uses this, needn&#39;t use <a><code>localeconv(3)</code></a> (and be affected by the gotchas) to find the decimal point, thousands separator, or currency symbol. See <a href="file:/c|/perl/html/pod/perlapi.html#Perl_langinfo">&quot;Perl_langinfo&quot; in perlapi</a>.</p>
+
+</li>
+<li><p>A new API function <a href="file:/c|/perl/html/pod/perlapi.html#sv_rvunweaken"><code>sv_rvunweaken()</code></a> has been added to complement <a href="file:/c|/perl/html/pod/perlapi.html#sv_rvweaken"><code>sv_rvweaken()</code></a>. The implementation was taken from <a href="file:/c|/perl/html/lib/Scalar/Util.html#unweaken">&quot;unweaken&quot; in Scalar::Util</a>.</p>
+
+</li>
+<li><p>A new flag, <code>SORTf_UNSTABLE</code>, has been added. This will allow a future commit to make mergesort unstable when the user specifies ‘no sort stable’, since it has been decided that mergesort should remain stable by default.</p>
+
+</li>
+<li><p>XS modules can now automatically get reentrant versions of system functions on threaded perls.</p>
+
+<p>By adding</p>
+
+<pre><code>    #define PERL_REENTRANT</code></pre>
+
+<p>near the beginning of an <code>XS</code> file, it will be compiled so that whatever reentrant functions perl knows about on that system will automatically and invisibly be used instead of the plain, non-reentrant versions. For example, if you write <code>getpwnam()</code> in your code, on a system that has <code>getpwnam_r()</code> all calls to the former will be translated invisibly into the latter. This does not happen except on threaded perls, as they aren&#39;t needed otherwise. Be aware that which functions have reentrant versions varies from system to system.</p>
+
+</li>
+<li><p>The <code>PERL_NO_OP_PARENT</code> build define is no longer supported, which means that perl is now always built with <code>PERL_OP_PARENT</code> enabled.</p>
+
+</li>
+<li><p>The format and content of the non-utf8 transliteration table attached to the <code>op_pv</code> field of <code>OP_TRANS</code>/<code>OP_TRANSR</code> ops has changed. It&#39;s now a <code>struct OPtrans_map</code>.</p>
+
+</li>
+<li><p>A new compiler <code>#define</code>, <code>dTHX_DEBUGGING</code>. has been added. This is useful for XS or C code that only need the thread context because their debugging statements that get compiled only under <code>-DDEBUGGING</code> need one.</p>
+
+</li>
+<li><p>A new API function <a href="file:/c|/perl/html/pod/perlapi.html#Perl_setlocale">&quot;Perl_setlocale&quot; in perlapi</a> has been added.</p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/pod/perlapi.html#sync_locale">&quot;sync_locale&quot; in perlapi</a> has been revised to return a boolean as to whether the system was using the global locale or not.</p>
+
+</li>
+<li><p>A new kind of magic scalar, called a &quot;nonelem&quot; scalar, has been introduced. It is stored in an array to denote a non-existent element, whenever such an element is accessed in a potential lvalue context. It replaces the existing &quot;defelem&quot; (deferred element) magic wherever this is possible, being significantly more efficient. This means that <code>some_sub($sparse_array[$nonelem])</code> no longer has to create a new magic defelem scalar each time, as long as the element is within the array.</p>
+
+<p>It partially fixes the rare bug of deferred elements getting out of synch with their arrays when the array is shifted or unshifted. <a href="https://rt.perl.org/Ticket/Display.html?id=132729">[perl #132729]</a></p>
+
+</li>
+</ul>
+
+<h1 id="Selected-Bug-Fixes">Selected Bug Fixes</h1>
+
+<ul>
+
+<li><p>List assignment (<code>aassign</code>) could in some rare cases allocate an entry on the mortals stack and leave the entry uninitialized, leading to possible crashes. <a href="https://rt.perl.org/Ticket/Display.html?id=131570">[perl #131570]</a></p>
+
+</li>
+<li><p>Attempting to apply an attribute to an <code>our</code> variable where a function of that name already exists could result in a NULL pointer being supplied where an SV was expected, crashing perl. <a href="https://rt.perl.org/Ticket/Display.html?id=131597">[perl #131597]</a></p>
+
+</li>
+<li><p><code>split &#39; &#39;</code> now correctly handles the argument being split when in the scope of the <a href="file:/c|/perl/html/lib/feature.html#The-unicode_strings-feature"><code>unicode_strings</code></a> feature. Previously, when a string using the single-byte internal representation contained characters that are whitespace by Unicode rules but not by ASCII rules, it treated those characters as part of fields rather than as field separators. <a href="https://rt.perl.org/Ticket/Display.html?id=130907">[perl #130907]</a></p>
+
+</li>
+<li><p>Several built-in functions previously had bugs that could cause them to write to the internal stack without allocating room for the item being written. In rare situations, this could have led to a crash. These bugs have now been fixed, and if any similar bugs are introduced in future, they will be detected automatically in debugging builds.</p>
+
+<p>These internal stack usage checks introduced are also done by the <code>entersub</code> operator when calling XSUBs. This means we can report which XSUB failed to allocate enough stack space. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131975">[perl #131975]</a></p>
+
+</li>
+<li><p>Using a symbolic ref with postderef syntax as the key in a hash lookup was yielding an assertion failure on debugging builds. <a href="https://rt.perl.org/Ticket/Display.html?id=131627">[perl #131627]</a></p>
+
+</li>
+<li><p>Array and hash variables whose names begin with a caret now admit indexing inside their curlies when interpolated into strings, as in <code>&quot;${^CAPTURE[0]}&quot;</code> to index <code>@{^CAPTURE}</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=131664">[perl #131664]</a></p>
+
+</li>
+<li><p>Fetching the name of a glob that was previously UTF-8 but wasn&#39;t any longer would return that name flagged as UTF-8. <a href="https://rt.perl.org/Ticket/Display.html?id=131263">[perl #131263]</a></p>
+
+</li>
+<li><p>The perl <code>sprintf()</code> function (via the underlying C function <code>Perl_sv_vcatpvfn_flags()</code>) has been heavily reworked to fix many minor bugs, including the integer wrapping of large width and precision specifiers and potential buffer overruns. It has also been made faster in many cases.</p>
+
+</li>
+<li><p>Exiting from an <code>eval</code>, whether normally or via an exception, now always frees temporary values (possibly calling destructors) <i>before</i> setting <code>$@</code>. For example:</p>
+
+<pre><code>    sub DESTROY { eval { die &quot;died in DESTROY&quot;; } }
+    eval { bless []; };
+    # $@ used to be equal to &quot;died in DESTROY&quot; here; it&#39;s now &quot;&quot;.</code></pre>
+
+</li>
+<li><p>Fixed a duplicate symbol failure with <code>-flto -mieee-fp</code> builds. <i>pp.c</i> defined <code>_LIB_VERSION</code> which <code>-lieee</code> already defines. <a href="https://rt.perl.org/Ticket/Display.html?id=131786">[perl #131786]</a></p>
+
+</li>
+<li><p>The tokenizer no longer consumes the exponent part of a floating point number if it&#39;s incomplete. <a href="https://rt.perl.org/Ticket/Display.html?id=131725">[perl #131725]</a></p>
+
+</li>
+<li><p>On non-threaded builds, for <code>m/$null/</code> where <code>$null</code> is an empty string is no longer treated as if the <code>/o</code> flag was present when the previous matching match operator included the <code>/o</code> flag. The rewriting used to implement this behavior could confuse the interpreter. This matches the behaviour of threaded builds. <a href="https://rt.perl.org/Ticket/Display.html?id=124368">[perl #124368]</a></p>
+
+</li>
+<li><p>Parsing a <code>sub</code> definition could cause a use after free if the <code>sub</code> keyword was followed by whitespace including newlines (and comments.) <a href="https://rt.perl.org/Public/Bug/Display.html?id=131836">[perl #131836]</a></p>
+
+</li>
+<li><p>The tokenizer now correctly adjusts a parse pointer when skipping whitespace in a <code>${identifier}</code> construct. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131949">[perl #131949]</a></p>
+
+</li>
+<li><p>Accesses to <code>${^LAST_FH}</code> no longer assert after using any of a variety of I/O operations on a non-glob. <a href="https://rt.perl.org/Public/Bug/Display.html?id=128263">[perl #128263]</a></p>
+
+</li>
+<li><p>The XS-level <code>Copy()</code>, <code>Move()</code>, <code>Zero()</code> macros and their variants now assert if the pointers supplied are <code>NULL</code>. ISO C considers supplying NULL pointers to the functions these macros are built upon as undefined behaviour even when their count parameters are zero. Based on these assertions and the original bug report three macro calls were made conditional. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131746">[perl #131746]</a> <a href="https://rt.perl.org/Public/Bug/Display.html?id=131892">[perl #131892]</a></p>
+
+</li>
+<li><p>Only the <code>=</code> operator is permitted for defining defaults for parameters in subroutine signatures. Previously other assignment operators, e.g. <code>+=</code>, were also accidentally permitted. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131777">[perl #131777]</a></p>
+
+</li>
+<li><p>Package names are now always included in <code>:prototype</code> warnings <a href="https://rt.perl.org/Public/Bug/Display.html?id=131833">[perl #131833]</a></p>
+
+</li>
+<li><p>The <code>je_old_stack_hwm</code> field, previously only found in the <code>jmpenv</code> structure on debugging builds, has been added to non-debug builds as well. This fixes an issue with some CPAN modules caused by the size of this structure varying between debugging and non-debugging builds. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131942">[perl #131942]</a></p>
+
+</li>
+<li><p>The arguments to the <code>ninstr()</code> macro are now correctly parenthesized.</p>
+
+</li>
+<li><p>A NULL pointer dereference in the <code>S_regmatch()</code> function has been fixed. <a href="https://rt.perl.org/Public/Bug/Display.html?id=132017">[perl #132017]</a></p>
+
+</li>
+<li><p>Calling <a href="file:/c|/perl/html/pod/perlfunc.html#exec-PROGRAM-LIST">exec PROGRAM LIST</a> with an empty <code>LIST</code> has been fixed. This should call <code>execvp()</code> with an empty <code>argv</code> array (containing only the terminating <code>NULL</code> pointer), but was instead just returning false (and not setting <a href="file:/c|/perl/html/pod/perlvar.html#pod"><code>$!</code></a>). <a href="https://rt.perl.org/Public/Bug/Display.html?id=131730">[perl #131730]</a></p>
+
+</li>
+<li><p>The <code>gv_fetchmeth_sv</code> C function stopped working properly in Perl 5.22 when fetching a constant with a UTF-8 name if that constant subroutine was stored in the stash as a simple scalar reference, rather than a full typeglob. This has been corrected.</p>
+
+</li>
+<li><p>Single-letter debugger commands followed by an argument which starts with punctuation (e.g. <code>p$^V</code> and <code>x@ARGV</code>) now work again. They had been wrongly requiring a space between the command and the argument. <a href="https://rt.perl.org/Public/Bug/Display.html?id=120174">[perl #120174]</a></p>
+
+</li>
+<li><p><a href="file:/c|/perl/html/pod/perlfunc.html#splice-ARRAY-OFFSET-LENGTH-LIST">splice</a> now throws an exception (&quot;Modification of a read-only value attempted&quot;) when modifying a read-only array. Until now it had been silently modifying the array. The new behaviour is consistent with the behaviour of <a href="file:/c|/perl/html/pod/perlfunc.html#push-ARRAY-LIST">push</a> and <a href="file:/c|/perl/html/pod/perlfunc.html#unshift-ARRAY-LIST">unshift</a>. <a href="https://rt.perl.org/Public/Bug/Display.html?id=131000">[perl #131000]</a></p>
+
+</li>
+<li><p><code>stat()</code>, <code>lstat()</code>, and file test operators now fail if given a filename containing a nul character, in the same way that <code>open()</code> already fails.</p>
+
+</li>
+<li><p><code>stat()</code>, <code>lstat()</code>, and file test operators now reliably set <code>$!</code> when failing due to being applied to a closed or otherwise invalid file handle.</p>
+
+</li>
+<li><p>File test operators for Unix permission bits that don&#39;t exist on a particular platform, such as <code>-k</code> (sticky bit) on Windows, now check that the file being tested exists before returning the blanket false result, and yield the appropriate errors if the argument doesn&#39;t refer to a file.</p>
+
+</li>
+<li><p>Fixed a &#39;read before buffer&#39; overrun when parsing a range starting with <code>\N{}</code> at the beginning of the character set for the transliteration operator. <a href="https://rt.perl.org/Ticket/Display.html?id=132245">[perl #132245]</a></p>
+
+</li>
+<li><p>Fixed a leaked scalar when parsing an empty <code>\N{}</code> at compile-time. <a href="https://rt.perl.org/Ticket/Display.html?id=132245">[perl #132245]</a></p>
+
+</li>
+<li><p>Calling <code>do $path</code> on a directory or block device now yields a meaningful error code in <code>$!</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=125774">[perl #125774]</a></p>
+
+</li>
+<li><p>Regexp substitution using an overloaded replacement value that provides a tainted stringification now correctly taints the resulting string. <a href="https://rt.perl.org/Ticket/Display.html?id=115266">[perl #115266]</a></p>
+
+</li>
+<li><p>Lexical sub declarations in <code>do</code> blocks such as <code>do { my sub lex; 123 }</code> could corrupt the stack, erasing items already on the stack in the enclosing statement. This has been fixed. <a href="https://rt.perl.org/Ticket/Display.html?id=132442">[perl #132442]</a></p>
+
+</li>
+<li><p><code>pack</code> and <code>unpack</code> can now handle repeat counts and lengths that exceed two billion. <a href="https://rt.perl.org/Ticket/Display.html?id=119367">[perl #119367]</a></p>
+
+</li>
+<li><p>Digits past the radix point in octal and binary floating point literals now have the correct weight on platforms where a floating point significand doesn&#39;t fit into an integer type.</p>
+
+</li>
+<li><p>The canonical truth value no longer has a spurious special meaning as a callable subroutine. It used to be a magic placeholder for a missing <code>import</code> or <code>unimport</code> method, but is now treated like any other string <code>1</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=126042">[perl #126042]</a></p>
+
+</li>
+<li><p><code>system</code> now reduces its arguments to strings in the parent process, so any effects of stringifying them (such as overload methods being called or warnings being emitted) are visible in the way the program expects. <a href="https://rt.perl.org/Ticket/Display.html?id=121105">[perl #121105]</a></p>
+
+</li>
+<li><p>The <code>readpipe()</code> built-in function now checks at compile time that it has only one parameter expression, and puts it in scalar context, thus ensuring that it doesn&#39;t corrupt the stack at runtime. <a href="https://rt.perl.org/Ticket/Display.html?id=4574">[perl #4574]</a></p>
+
+</li>
+<li><p><code>sort</code> now performs correct reference counting when aliasing <code>$a</code> and <code>$b</code>, thus avoiding premature destruction and leakage of scalars if they are re-aliased during execution of the sort comparator. <a href="https://rt.perl.org/Ticket/Display.html?id=92264">[perl #92264]</a></p>
+
+</li>
+<li><p><code>reverse</code> with no operand, reversing <code>$_</code> by default, is no longer in danger of corrupting the stack. <a href="https://rt.perl.org/Ticket/Display.html?id=132544">[perl #132544]</a></p>
+
+</li>
+<li><p><code>exec</code>, <code>system</code>, et al are no longer liable to have their argument lists corrupted by reentrant calls and by magic such as tied scalars. <a href="https://rt.perl.org/Ticket/Display.html?id=129888">[perl #129888]</a></p>
+
+</li>
+<li><p>Perl&#39;s own <code>malloc</code> no longer gets confused by attempts to allocate more than a gigabyte on a 64-bit platform. <a href="https://rt.perl.org/Ticket/Display.html?id=119829">[perl #119829]</a></p>
+
+</li>
+<li><p>Stacked file test operators in a sort comparator expression no longer cause a crash. <a href="https://rt.perl.org/Ticket/Display.html?id=129347">[perl #129347]</a></p>
+
+</li>
+<li><p>An identity <code>tr///</code> transformation on a reference is no longer mistaken for that reference for the purposes of deciding whether it can be assigned to. <a href="https://rt.perl.org/Ticket/Display.html?id=130578">[perl #130578]</a></p>
+
+</li>
+<li><p>Lengthy hexadecimal, octal, or binary floating point literals no longer cause undefined behaviour when parsing digits that are of such low significance that they can&#39;t affect the floating point value. <a href="https://rt.perl.org/Ticket/Display.html?id=131894">[perl #131894]</a></p>
+
+</li>
+<li><p><code>open $$scalarref...</code> and similar invocations no longer leak the file handle. <a href="https://rt.perl.org/Ticket/Display.html?id=115814">[perl #115814]</a></p>
+
+</li>
+<li><p>Some convoluted kinds of regexp no longer cause an arithmetic overflow when compiled. <a href="https://rt.perl.org/Ticket/Display.html?id=131893">[perl #131893]</a></p>
+
+</li>
+<li><p>The default typemap, by avoiding <code>newGVgen</code>, now no longer leaks when XSUBs return file handles (<code>PerlIO *</code> or <code>FILE *</code>). <a href="https://rt.perl.org/Ticket/Display.html?id=115814">[perl #115814]</a></p>
+
+</li>
+<li><p>Creating a <code>BEGIN</code> block as an XS subroutine with a prototype no longer crashes because of the early freeing of the subroutine.</p>
+
+</li>
+<li><p>The <code>printf</code> format specifier <code>%.0f</code> no longer rounds incorrectly <a href="https://rt.perl.org/Ticket/Display.html?id=47602">[perl #47602]</a>, and now shows the correct sign for a negative zero.</p>
+
+</li>
+<li><p>Fixed an issue where the error <code>Scalar value @arrayname[0] better written as $arrayname</code> would give an error <code>Cannot printf Inf with &#39;c&#39;</code> when arrayname starts with <code>Inf</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=132645">[perl #132645]</a></p>
+
+</li>
+<li><p>The Perl implementation of <code>getcwd()</code> in <code>Cwd</code> in the PathTools distribution now behaves the same as XS implementation on errors: it returns an error, and sets <code>$!</code>. <a href="https://rt.perl.org/Ticket/Display.html?id=132648">[perl #132648]</a></p>
+
+</li>
+<li><p>Vivify array elements when putting them on the stack. Fixes <a href="https://rt.perl.org/Ticket/Display.html?id=8910">[perl #8910]</a> (reported in April 2002).</p>
+
+</li>
+<li><p>Fixed parsing of braced subscript after parens. Fixes <a href="https://rt.perl.org/Ticket/Display.html?id=8045">[perl #8045]</a> (reported in December 2001).</p>
+
+</li>
+<li><p><code>tr/non_utf8/long_non_utf8/c</code> could give the wrong results when the length of the replacement character list was greater than 0x7fff.</p>
+
+</li>
+<li><p><code>tr/non_utf8/non_utf8/cd</code> failed to add the implied <code>\x{100}-\x{7fffffff}</code> to the search character list.</p>
+
+</li>
+<li><p>Compilation failures within &quot;perl-within-perl&quot; constructs, such as with string interpolation and the right part of <code>s///e</code>, now cause compilation to abort earlier.</p>
+
+<p>Previously compilation could continue in order to report other errors, but the failed sub-parse could leave partly parsed constructs on the parser shift-reduce stack, confusing the parser, leading to perl crashes. <a href="https://rt.perl.org/Ticket/Display.html?id=125351">[perl #125351]</a></p>
+
+</li>
+<li><p>On threaded perls where the decimal point (radix) character is not a dot, it has been possible for a race to occur between threads when one needs to use the real radix character (such as with <code>sprintf</code>). This has now been fixed by use of a mutex on systems without thread-safe locales, and the problem just doesn&#39;t come up on those with thread-safe locales.</p>
+
+</li>
+<li><p>Errors while compiling a regex character class could sometime trigger an assertion failure. <a href="https://rt.perl.org/Ticket/Display.html?id=132163">[perl #132163]</a></p>
+
+</li>
+</ul>
+
+<h1 id="Acknowledgements">Acknowledgements</h1>
+
+<p>Perl 5.28.0 represents approximately 13 months of development since Perl 5.26.0 and contains approximately 730,000 lines of changes across 2,200 files from 77 authors.</p>
+
+<p>Excluding auto-generated files, documentation and release tools, there were approximately 580,000 lines of changes to 1,300 .pm, .t, .c and .h files.</p>
+
+<p>Perl continues to flourish into its fourth decade thanks to a vibrant community of users and developers. The following people are known to have contributed the improvements that became Perl 5.28.0:</p>
+
+<p>Aaron Crane, Abigail, Ævar Arnfjörð Bjarmason, Alberto Simões, Alexandr Savca, Andrew Fresh, Andy Dougherty, Andy Lester, Aristotle Pagaltzis, Ask Bjørn Hansen, Chris &#39;BinGOs&#39; Williams, Craig A. Berry, Dagfinn Ilmari Mannsåker, Dan Collins, Daniel Dragan, David Cantrell, David Mitchell, Dmitry Ulanov, Dominic Hargreaves, E. Choroba, Eric Herman, Eugen Konkov, Father Chrysostomos, Gene Sullivan, George Hartzell, Graham Knop, Harald Jörg, H.Merijn Brand, Hugo van der Sanden, Jacques Germishuys, James E Keenan, Jarkko Hietaniemi, Jerry D. Hedden, J. Nick Koston, John Lightsey, John Peacock, John P. Linderman, John SJ Anderson, Karen Etheridge, Karl Williamson, Ken Brown, Ken Cotterill, Leon Timmermans, Lukas Mai, Marco Fontani, Marc-Philip Werner, Matthew Horsfall, Neil Bowers, Nicholas Clark, Nicolas R., Niko Tyni, Pali, Paul Marquess, Peter John Acklam, Reini Urban, Renee Baecker, Ricardo Signes, Robin Barker, Sawyer X, Scott Lanning, Sergey Aleynikov, Shirakata Kentaro, Shoichi Kaji, Slaven Rezic, Smylers, Steffen Müller, Steve Hay, Sullivan Beck, Thomas Sibley, Todd Rinaldo, Tomasz Konojacki, Tom Hukins, Tom Wyant, Tony Cook, Vitali Peil, Yves Orton, Zefram.</p>
+
+<p>The list above is almost certainly incomplete as it is automatically generated from version control history. In particular, it does not include the names of the (very much appreciated) contributors who reported issues to the Perl bug tracker.</p>
+
+<p>Many of the changes included in this version originated in the CPAN modules included in Perl&#39;s core. We&#39;re grateful to the entire CPAN community for helping Perl to flourish.</p>
+
+<p>For a more complete list of all of Perl&#39;s historical contributors, please see the <i>AUTHORS</i> file in the Perl source distribution.</p>
+
+<h1 id="Reporting-Bugs">Reporting Bugs</h1>
+
+<p>If you find what you think is a bug, you might check the perl bug database at <a href="https://rt.perl.org/">https://rt.perl.org/</a> . There may also be information at <a href="http://www.perl.org/">http://www.perl.org/</a> , the Perl Home Page.</p>
+
+<p>If you believe you have an unreported bug, please run the <a href="file:/c|/perl/html/utils/perlbug.html">perlbug</a> program included with your release. Be sure to trim your bug down to a tiny but sufficient test case. Your bug report, along with the output of <code>perl -V</code>, will be sent off to perlbug@perl.org to be analysed by the Perl porting team.</p>
+
+<p>If the bug you are reporting has security implications which make it inappropriate to send to a publicly archived mailing list, then see <a href="file:/c|/perl/html/pod/perlsec.html#SECURITY-VULNERABILITY-CONTACT-INFORMATION">&quot;SECURITY VULNERABILITY CONTACT INFORMATION&quot; in perlsec</a> for details of how to report the issue.</p>
+
+<h1 id="Give-Thanks">Give Thanks</h1>
+
+<p>If you wish to thank the Perl 5 Porters for the work we had done in Perl 5, you can do so by running the <code>perlthanks</code> program:</p>
+
+<pre><code>    perlthanks</code></pre>
+
+<p>This will send an email to the Perl 5 Porters list with your show of thanks.</p>
+
+<h1 id="SEE-ALSO">SEE ALSO</h1>
+
+<p>The <i>Changes</i> file for an explanation of how to view exhaustive details on what changed.</p>
+
+<p>The <i>INSTALL</i> file for how to build Perl.</p>
+
+<p>The <i>README</i> file for general stuff.</p>
+
+<p>The <i>Artistic</i> and <i>Copying</i> files for copyright information.</p>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="_podblock_" style="background-color: #cccccc; color: #000" valign="middle">
+<big><strong><span class="_podblock_">&nbsp;perl5280delta - what is new for perl v5.28.0</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
+
+
